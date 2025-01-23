@@ -25,10 +25,15 @@ enum ButtonType {
 
 typedef void (*ButtonCallback)(ButtonType button, ButtonState state);
 
+struct ButtonEvent {
+    ButtonType button;
+    ButtonState state;
+};
+
 class ButtonHandler {
 public:
     ButtonHandler(int upPin, int downPin, int leftPin, int rightPin, int backPin, int okPin, ButtonCallback callback);
-    void update();
+    void update();    
 
 private:
     struct Button {

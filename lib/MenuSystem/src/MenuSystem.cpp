@@ -1,55 +1,252 @@
 #include "MenuSystem.h"
+#include "BitmapIcon.h"
 
-MenuSystem::MenuSystem(U8G2 &display) : display(display), menuItems(nullptr), itemCount(0), currentIndex(0), topIndex(0) {
-    itemsPerPage = display.getDisplayHeight() / 10; // Assuming 10px per item row height
+MenuSystem::MenuSystem(U8G2 &display, IRTools &irTools) : 
+                                        display(display),
+                                        irTools(irTools),
+                                        currentMenuState(currentMenuState),
+                                        menuItems(nullptr),
+                                        itemCount(0),
+                                        currentIndex(0),
+                                        previousIndex(0),
+                                        nextIndex(0),
+                                        topIndex(0)
+{
+  itemsPerPage = display.getDisplayHeight() / 10; // Assuming 10px per item row height
 }
 
-void MenuSystem::addMenu(const char **menuItems, uint8_t itemCount) {
-    this->menuItems = menuItems;
-    this->itemCount = itemCount;
+int MenuSystem::getCurrentIndex() const {
+  return currentIndex;
+}
+
+void MenuSystem::addMenu(const char **menuItems, uint8_t itemCount)
+{
+  this->menuItems = menuItems;
+  this->itemCount = itemCount;
+  currentIndex = 0;
+  previousIndex = 0;
+  nextIndex = 0;
+  topIndex = 0;
+}
+
+void MenuSystem::navigateUp()
+{
+  currentIndex--;
+  if (currentIndex < 0) {
+    currentIndex = itemCount - 1;
+  }
+}
+
+void MenuSystem::navigateDown()
+{
+  currentIndex++;
+  if (currentIndex >= itemCount) {
     currentIndex = 0;
-    topIndex = 0;
+  }
 }
 
-void MenuSystem::navigateUp() {
-    if (currentIndex > 0) {
-        currentIndex--;
-        if (currentIndex < topIndex) {
-            topIndex = currentIndex;
-        }
+void MenuSystem::select()
+{
+  // do nothing
+}
+
+void MenuSystem::back()
+{
+  // do nothing
+}
+
+void MenuSystem::render(MenuState currentMenuState)
+{
+  // set correct values for previous and next items
+  previousIndex = currentIndex - 1;
+  if (previousIndex < 0) {
+    previousIndex = itemCount - 1;
+  }
+  nextIndex = currentIndex + 1;  
+  if (nextIndex >= itemCount) {
+    nextIndex = 0;
+  } // next item would be after last = make it the first
+
+  display.firstPage();
+  do {
+    switch(currentMenuState) {
+      case INFRARED_MENU: 
+        drawIRMenu();
+        break;
+      case INFRARED_MENU_READING:
+        infraredMenuReadingScreen();
+        break;
+      case INFRARED_MENU_READING_DONE:
+        char cmdBuffer[6]; sprintf(cmdBuffer, "%u", irTools.getCurrentIrData().command);
+        char addrBuffer[6]; sprintf(addrBuffer, "%u", irTools.getCurrentIrData().address);
+        infraredMenuReadingDoneScreen(cmdBuffer, addrBuffer, irTools.getCurrentIrData().protocol);
+        break;
+      case INFRARED_MENU_READING_DONE_SAVING:
+      case INFRARED_MENU_READING_ERROR:
+      case INFRARED_MENU_SEND:
+      case INFRARED_MENU_SEND_LIST:
+      case INFRARED_MENU_SEND_SENDING:
+      case INFRARED_MENU_LIST:
+      case INFRARED_MENU_LIST_DELETE:
+      case INFRARED_MENU_LIST_DELETE_SUCCESS:
+      case WIFI_MENU_SCAN:
+      case WIFI_MENU_SCAN_SCANNING:
+      case WIFI_MENU_SCAN_LIST:
+      case WIFI_MENU_DEAUTH:
+      case WIFI_MENU_DEAUTH_SCANNING:
+      case WIFI_MENU_DEAUTH_LIST:
+      case WIFI_MENU_DEAUTH_ATTACKING:
+      case WIFI_MENU_STATION:
+      case BLE_MENU_SCAN:
+      case BLE_MENU_RECEIVE:
+      case BLE_MENU_SEND:
+      case LORA_MENU_SEND:
+      case LORA_MENU_RECEIVE:
+      case LORA_MENU_INFO:
+      case NFC_MENU_READING:
+      case NFC_MENU_READING_DONE:
+      case NFC_MENU_READING_FAILED:
+      case NFC_MENU_SEND:
+      case NFC_MENU_SEND_LIST:
+      case NFC_MENU_SEND_SENDING:
+      case NFC_MENU_SEND_DONE:
+      case NFC_MENU_LIST:
+      case NFC_MENU_LIST_DELETE:
+      case NFC_MENU_LIST_DELETE_SUCCESS:
+      case MICROSD_MENU_INFO:
+      case MICROSD_MENU_FORMAT:
+      case MICROSD_MENU_FORMAT_DONE:
+      case MICROSD_MENU_FORMAT_ERROR:
+        inDevelopment();
+        break;
+      case MAIN_MENU: 
+      default:
+        drawMenu();
     }
+    
+    // display.setFont(u8g2_font_ncenB14_tr);
+    // display.drawStr(0,15,"Hello World!");
+  } while (display.nextPage());
 }
 
-void MenuSystem::navigateDown() {
-    if (currentIndex < itemCount - 1) {
-        currentIndex++;
-        if (currentIndex >= topIndex + itemsPerPage) {
-            topIndex++;
-        }
-    }
+void MenuSystem::drawMenu()
+{
+  // selected item background
+  display.setFlipMode(0);
+  display.drawBitmap(0, 22, 128/8, 21, bitmap_item_sel_outline);
+
+  // draw previous item as icon + label
+  display.setFont(u8g_font_7x14);
+  display.drawStr(25, 15, menuItems[previousIndex]); 
+  display.drawBitmap( 4, 2, 16/8, 16, bitmap_icons[previousIndex]);          
+
+  // draw selected item as icon + label in bold font
+  display.setFont(u8g_font_7x14B);    
+  display.drawStr(25, 15+20+2, menuItems[currentIndex]);   
+  display.setDrawColor(0); // Invert text color for selected item
+  display.drawBitmap( 4, 24, 16/8, 16, bitmap_icons[currentIndex]);     
+  display.setDrawColor(1); // Invert text color for selected item
+
+  // draw next item as icon + label
+  display.setFont(u8g_font_7x14);     
+  display.drawStr(25, 15+20+20+2+2, menuItems[nextIndex]);   
+  display.drawBitmap( 4, 46, 16/8, 16, bitmap_icons[nextIndex]);        
+
+  // draw scrollbar handle
+  display.drawBox(125, 64/itemCount * currentIndex, 3, 64/itemCount);
+}
+void MenuSystem::drawIRMenu()
+{
+  // selected item background
+  display.setFlipMode(0);
+  display.drawBitmap(0, 22, 128/8, 21, bitmap_item_sel_outline);
+
+  // draw previous item as icon + label
+  display.setFont(u8g_font_7x14);
+  display.drawStr(25, 15, menuItems[previousIndex]); 
+  display.drawBitmap( 4, 2, 16/8, 16, bitmap_icons[0]);          
+
+  // draw selected item as icon + label in bold font
+  display.setFont(u8g_font_7x14B);    
+  display.drawStr(25, 15+20+2, menuItems[currentIndex]);   
+  display.setDrawColor(0); // Invert text color for selected item
+  display.drawBitmap( 4, 24, 16/8, 16, bitmap_icons[0]);     
+  display.setDrawColor(1); // Invert text color for selected item
+
+  // draw next item as icon + label
+  display.setFont(u8g_font_7x14);     
+  display.drawStr(25, 15+20+20+2+2, menuItems[nextIndex]);   
+  display.drawBitmap( 4, 46, 16/8, 16, bitmap_icons[0]);        
+
+  // draw scrollbar handle
+  display.drawBox(125, 64/itemCount * currentIndex, 3, 64/itemCount);
 }
 
-void MenuSystem::select() {
-    // Add custom functionality for when an item is selected
-    Serial.println(menuItems[currentIndex]);
-}
 
-void MenuSystem::render() {
-    display.clearBuffer();
-    drawMenu();
-    display.sendBuffer();
+// Screen
+void MenuSystem::inDevelopment() {
+  display.setFont(u8g_font_7x14);
+  display.drawStr(0, 14, "404");
+  display.drawStr(0, 28, "In Development");
 }
+void MenuSystem::infraredMenuReadingScreen() {  
+  display.drawXBMP(0, 0, 128, 64, screen[0]);
+}
+void MenuSystem::infraredMenuReadingDoneScreen(char *command, char *address, const char *protocol) {
+  display.setFont(u8g_font_7x14);
+  display.drawStr(0, 14, "Read Done");
+  display.drawStr(0, 28, "cmd: 0x");
+  display.drawStr(49, 28, command);
+  display.drawStr(0, 42, "adr: 0x");
+  display.drawStr(49, 42, address);
+  display.drawStr(0, 56, "pro: 0x");
+  display.drawStr(49, 56, protocol);
+}
+void MenuSystem::infraredMenuReadingDoneSavingScreen() {
+  display.setFont(u8g_font_7x14);
+  display.drawStr(0, 14, "IR Code Saved");
+}
+void MenuSystem::infraredMenuReadingErrorScreen() {
+  display.setFont(u8g_font_7x14);
+  display.drawStr(0, 14, "IR Reading Error");
+}
+void MenuSystem::infraredMenuSendScreen() {}
+void MenuSystem::infraredMenuSendListScreen() {}
+void MenuSystem::infraredMenuSendSendingScreen() {}
+void MenuSystem::infraredMenuListScreen() {}
+void MenuSystem::infraredMenuListDeleteScreen() {}
+void MenuSystem::infraredMenuListDeleteSuccessScreen() {}
 
-void MenuSystem::drawMenu() {
-    uint8_t endIndex = min(topIndex + itemsPerPage, itemCount);
-    for (uint8_t i = topIndex; i < endIndex; i++) {
-        if (i == currentIndex) {
-            display.drawBox(0, (i - topIndex) * 10, display.getDisplayWidth(), 10);
-            display.setDrawColor(0); // Invert text color for selected item
-        } else {
-            display.setDrawColor(1);
-        }
-        display.setCursor(2, (i - topIndex) * 10 + 9);
-        display.print(menuItems[i]);
-    }
-}
+void MenuSystem::wifiMenuScanScreen() {}
+void MenuSystem::wifiMenuScanScanningScreen() {}
+void MenuSystem::wifiMenuScanListScreen() {}
+void MenuSystem::wifiMenuDeauthScreen() {}
+void MenuSystem::wifiMenuDeauthScanningScreen() {}
+void MenuSystem::wifiMenuDeauthListScreen() {}
+void MenuSystem::wifiMenuDeauthAttackingScreen() {}
+void MenuSystem::wifiMenuStationScreen() {}
+
+void MenuSystem::bleMenuScanScreen() {}
+void MenuSystem::bleMenuReceiveScreen() {}
+void MenuSystem::bleMenuSendScreen() {}
+
+void MenuSystem::loraMenuSendScreen() {}
+void MenuSystem::loraMenuReceiveScreen() {}
+void MenuSystem::loraMenuInfoScreen() {}
+
+void MenuSystem::nfcMenuReadingScreen() {}
+void MenuSystem::nfcMenuReadingDoneScreen() {}
+void MenuSystem::nfcMenuReadingFailedScreen() {}
+void MenuSystem::nfcMenuSendScreen() {}
+void MenuSystem::nfcMenuSendListScreen() {}
+void MenuSystem::nfcMenuSendSendingScreen() {}
+void MenuSystem::nfcMenuSendDoneScreen() {}
+void MenuSystem::nfcMenuListScreen() {}
+void MenuSystem::nfcMenuListDeleteScreen() {}
+void MenuSystem::nfcMenuListDeleteSuccessScreen() {}
+
+void MenuSystem::microsdMenuScreen() {}
+void MenuSystem::microsdMenuInfoScreen() {}
+void MenuSystem::microsdMenuFormatScreen() {}
+void MenuSystem::microsdMenuFormatDoneScreen() {}
+void MenuSystem::microsdMenuFormatErrorScreen() {}
