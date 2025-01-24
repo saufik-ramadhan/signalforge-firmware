@@ -1,9 +1,10 @@
 #include "MenuSystem.h"
 #include "BitmapIcon.h"
 
-MenuSystem::MenuSystem(U8G2 &display, IRTools &irTools) : 
+MenuSystem::MenuSystem(U8G2 &display, IRTools &irTools, SDTools &sdTools) :
                                         display(display),
                                         irTools(irTools),
+                                        sdTools(sdTools),
                                         currentMenuState(currentMenuState),
                                         menuItems(nullptr),
                                         itemCount(0),
@@ -77,14 +78,20 @@ void MenuSystem::render(MenuState currentMenuState)
         infraredMenuReadingScreen();
         break;
       case INFRARED_MENU_READING_DONE:
-        char cmdBuffer[6]; sprintf(cmdBuffer, "%u", irTools.getCurrentIrData().command);
-        char addrBuffer[6]; sprintf(addrBuffer, "%u", irTools.getCurrentIrData().address);
+        char cmdBuffer[6]; sprintf(cmdBuffer, "%hx", irTools.getCurrentIrData().command);
+        char addrBuffer[6]; sprintf(addrBuffer, "%hx", irTools.getCurrentIrData().address);
         infraredMenuReadingDoneScreen(cmdBuffer, addrBuffer, irTools.getCurrentIrData().protocol);
+        break;
+      case INFRARED_MENU_SEND:
+        break;
+      case INFRARED_MENU_SEND_LIST:
+        infraredMenuSendListScreen();
+        break;
+      case INFRARED_MENU_SEND_LIST_FAILED: 
+        infraredMenuSendListFailedScreen();
         break;
       case INFRARED_MENU_READING_DONE_SAVING:
       case INFRARED_MENU_READING_ERROR:
-      case INFRARED_MENU_SEND:
-      case INFRARED_MENU_SEND_LIST:
       case INFRARED_MENU_SEND_SENDING:
       case INFRARED_MENU_LIST:
       case INFRARED_MENU_LIST_DELETE:
@@ -132,7 +139,8 @@ void MenuSystem::render(MenuState currentMenuState)
 void MenuSystem::drawMenu()
 {
   // selected item background
-  display.setFlipMode(0);
+  display.setFlipMode(1);
+
   display.drawBitmap(0, 22, 128/8, 21, bitmap_item_sel_outline);
 
   // draw previous item as icon + label
@@ -158,7 +166,6 @@ void MenuSystem::drawMenu()
 void MenuSystem::drawIRMenu()
 {
   // selected item background
-  display.setFlipMode(0);
   display.drawBitmap(0, 22, 128/8, 21, bitmap_item_sel_outline);
 
   // draw previous item as icon + label
@@ -181,6 +188,26 @@ void MenuSystem::drawIRMenu()
   // draw scrollbar handle
   display.drawBox(125, 64/itemCount * currentIndex, 3, 64/itemCount);
 }
+void MenuSystem::drawList()
+{
+  // selected item background
+  display.drawBitmap(0, 22, 128/8, 21, bitmap_item_sel_outline);
+
+  // draw previous item as icon + label
+  display.setFont(u8g_font_7x14);
+  display.drawStr(0, 15, menuItems[previousIndex]); 
+
+  // draw selected item as icon + label in bold font
+  display.setFont(u8g_font_7x14B);
+  display.drawStr(0, 15+20+2, menuItems[currentIndex]);     
+
+  // draw next item as icon + label
+  display.setFont(u8g_font_7x14);
+  display.drawStr(0, 15+20+20+2+2, menuItems[nextIndex]);
+
+  // draw scrollbar handle
+  display.drawBox(125, 64/itemCount * currentIndex, 3, 64/itemCount);
+}
 
 
 // Screen
@@ -199,8 +226,8 @@ void MenuSystem::infraredMenuReadingDoneScreen(char *command, char *address, con
   display.drawStr(49, 28, command);
   display.drawStr(0, 42, "adr: 0x");
   display.drawStr(49, 42, address);
-  display.drawStr(0, 56, "pro: 0x");
-  display.drawStr(49, 56, protocol);
+  display.drawStr(0, 56, "pro:");
+  display.drawStr(35, 56, protocol);
 }
 void MenuSystem::infraredMenuReadingDoneSavingScreen() {
   display.setFont(u8g_font_7x14);
@@ -211,7 +238,15 @@ void MenuSystem::infraredMenuReadingErrorScreen() {
   display.drawStr(0, 14, "IR Reading Error");
 }
 void MenuSystem::infraredMenuSendScreen() {}
-void MenuSystem::infraredMenuSendListScreen() {}
+void MenuSystem::infraredMenuSendListScreen() {
+  drawList();
+}
+void MenuSystem::infraredMenuSendListFailedScreen() {
+  display.setFont(u8g_font_7x14);
+  display.drawStr(0, 14, "Failed to open file");
+  display.drawStr(0, 28, "check ircommand.csv");
+  display.drawStr(0, 42, "if is exist !!!");
+}
 void MenuSystem::infraredMenuSendSendingScreen() {}
 void MenuSystem::infraredMenuListScreen() {}
 void MenuSystem::infraredMenuListDeleteScreen() {}

@@ -6,11 +6,12 @@
 #include <ButtonHandler.h>
 #include <MenuList.h>
 #include <IRTools.h>
+#include <SDTools.h>
 
 class MenuSystem
 {
 public:
-  MenuSystem(U8G2 &display, IRTools &irTool);
+  MenuSystem(U8G2 &display, IRTools &irTool, SDTools &sdTools);
 
   void addMenu(const char **menuItems, uint8_t itemCount);
   void navigateUp();
@@ -25,6 +26,7 @@ public:
 private:
   U8G2 &display;
   IRTools &irTools;
+  SDTools &sdTools;
   MenuState currentMenuState;
   const char **menuItems;
   uint8_t itemCount;
@@ -37,6 +39,7 @@ private:
 
   void drawMenu();
   void drawIRMenu();
+  void drawList();
 
   // Screen
   void inDevelopment();
@@ -47,6 +50,7 @@ private:
   void infraredMenuReadingErrorScreen();
   void infraredMenuSendScreen();
   void infraredMenuSendListScreen();
+  void infraredMenuSendListFailedScreen();
   void infraredMenuSendSendingScreen();
   void infraredMenuListScreen();
   void infraredMenuListDeleteScreen();

@@ -2,6 +2,13 @@
 
 WifiTools::WifiTools() {
     // Constructor (can initialize variables here if needed)
+    WiFi.mode(WIFI_STA);
+    WiFi.disconnect();
+}
+
+void WifiTools::begin() {
+    WiFi.mode(WIFI_STA);
+    WiFi.disconnect();
 }
 
 void WifiTools::connectToWiFi(const char* ssid, const char* password) {

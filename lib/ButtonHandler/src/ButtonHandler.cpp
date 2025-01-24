@@ -10,7 +10,8 @@ ButtonHandler::ButtonHandler(int upPin, int downPin, int leftPin, int rightPin, 
     this->callback = callback;
 
     for (int i = 0; i < 6; ++i) {
-        if(buttons[i].pin != -1) pinMode(buttons[i].pin, INPUT_PULLUP);
+        if(buttons[i].pin != -1) pinMode(buttons[i].pin, INPUT);
+        // if(buttons[i].pin != -1) pinMode(buttons[i].pin, INPUT_PULLUP);
     }
 }
 
