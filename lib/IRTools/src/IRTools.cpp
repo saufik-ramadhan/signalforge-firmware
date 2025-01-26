@@ -11,7 +11,7 @@ IRTools::IRTools(IRReceiveCallback callback) : irData(irData), listIrData(listIr
 void IRTools::begin()
 {
     pinMode(IR_RECEIVE_PIN, INPUT);
-    pinMode(IR_SEND_PIN, OUTPUT);
+    // pinMode(IR_SEND_PIN, OUTPUT);
     
     IrReceiver.begin(IR_RECEIVE_PIN, ENABLE_LED_FEEDBACK); // Start with IR_SEND_PIN
     Serial.print("IR Receiver at pin ");
@@ -50,7 +50,7 @@ void IRTools::receive()
          */
         irData.address = IrReceiver.decodedIRData.address;
         irData.command = IrReceiver.decodedIRData.command;
-        irData.protocol = IrReceiver.getProtocolString();
+        strcpy(irData.protocol, IrReceiver.getProtocolString());
         callback();
     }
 }
@@ -63,17 +63,20 @@ DecodedIRData * IRTools::getListSaved() const {
     return listIrData;
 }
 
-const char ** IRTools::getListSavedNames() {
-    char** names = new char*[listIrDataSize];
+char (*IRTools::getListSavedNames())[15] {
+    // Static array to hold menu items
+    static char names[100][15]; // Fixed-size array for 100 items, each of 15 chars
+    
+    // Copy the names to the static array (up to 15 chars)
     for (size_t i = 0; i < listIrDataSize; ++i) {
-        // Allocate memory for each name and copy it
-        names[i] = new char[32];
-        strcpy(names[i], listIrData[i].name);
+        strncpy(names[i], listIrData[i].name, 15);
+        names[i][14] = '\0'; // Ensure null termination
     }
-    return const_cast<const char**>(names);
+
+    return names;  // Return the pointer to the static array
 }
 
-size_t IRTools::getListSavedSize() const {
+size_t IRTools::getListSavedSize() {
     return listIrDataSize;
 }
 
@@ -92,42 +95,33 @@ void IRTools::saveReceived() {
 }
 
 void IRTools::discardReceived() {
-    // todo
+    // TODO
 }
 
 // Function to send IR signal
 void IRTools::send(uint8_t index)
 {
-    // Serial.print("Sent:");
-    // Serial.println(listIrData[index].protocol);
     DecodedIRData irData = listIrData[index];
-    
+
     if (strcmp(irData.protocol, "samsung") == 0 || strcmp(irData.protocol, "Samsung") == 0) {
         IrSender.sendSamsung(irData.address, irData.command, 0);
-        Serial.println("IR Sent");
     }
     else if (strcmp(irData.protocol, "NEC") == 0) {
         IrSender.sendNEC(irData.address, irData.command, 0);
-        Serial.println("IR Sent");
     }
     else if (strcmp(irData.protocol, "Onkyo") == 0) {
         IrSender.sendOnkyo(irData.address, irData.command, 0);
-        Serial.println("IR Sent");
     }
     else if (strcmp(irData.protocol, "Sony") == 0) {
         IrSender.sendSony(irData.address, irData.command, 0);
-        Serial.println("IR Sent");
     }
     else if (strcmp(irData.protocol, "LG") == 0) {
         IrSender.sendLG(irData.address, irData.command, 0);
-        Serial.println("IR Sent");
     }
     else if (strcmp(irData.protocol, "Sharp") == 0) {
         IrSender.sendSharp(irData.address, irData.command, 0);
-        Serial.println("IR Sent");
     }
     else if (strcmp(irData.protocol, "Panasonic") == 0) {
         IrSender.sendPanasonic(irData.address, irData.command, 0);
-        Serial.println("IR Sent");
     }
 }

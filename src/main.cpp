@@ -82,6 +82,7 @@ void menuTask(void *parameter)
   while (1)
   {
     menu.render(currentMenuState);
+    msDelay(40);
   }
 }
 void menuNavigation(ButtonEvent event)
@@ -277,7 +278,7 @@ void irTask(void *parameter) {
                 strcpy(irDataArray[irDataCount].name, name);
                 irDataArray[irDataCount].command = command;
                 irDataArray[irDataCount].address = address;
-                irDataArray[irDataCount].protocol = protocol;
+                strcpy(irDataArray[irDataCount].protocol, protocol);
                 irDataCount++;
             }
             Serial.println(lineBuffer);
@@ -288,7 +289,7 @@ void irTask(void *parameter) {
           strcpy(irDataArray[irDataCount].name, nameBuffer);
           irDataArray[irDataCount].address = irTools.getCurrentIrData().address;
           irDataArray[irDataCount].command = irTools.getCurrentIrData().command;
-          irDataArray[irDataCount].protocol = irTools.getCurrentIrData().protocol;
+          strcpy(irDataArray[irDataCount].protocol, irTools.getCurrentIrData().protocol);
           irDataCount++;
           // --- end
           csvFile.close();
@@ -339,17 +340,24 @@ void irTask(void *parameter) {
           }
           // Display data rows
           while (sdTools.readLine(csvFile, lineBuffer, sizeof(lineBuffer))) {
-            Serial.println(lineBuffer); // Print each row to Serial (optional)
             char name[32], protocol[16];
             uint16_t command, address;
 
             if (sscanf(lineBuffer, "%31[^;];0x%hx;0x%hx;%15[^;]", name, &command, &address, protocol) == 4) {
+                Serial.print(name);
+                Serial.print(";");
+                Serial.print(command);
+                Serial.print(";");
+                Serial.print(address);
+                Serial.print(";");
+                Serial.println(protocol);
                 strcpy(irDataArray[irDataCount].name, name);
                 irDataArray[irDataCount].command = command;
                 irDataArray[irDataCount].address = address;
-                irDataArray[irDataCount].protocol = protocol;
+                strcpy(irDataArray[irDataCount].protocol, protocol);
                 irDataCount++;
             }
+            // Serial.println(lineBuffer); // Print each row to Serial (optional)
             Serial.println("SUCCESS");
           }
           irTools.setListSaved(irDataArray, irDataCount);

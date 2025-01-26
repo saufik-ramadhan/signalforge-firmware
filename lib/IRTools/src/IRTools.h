@@ -9,8 +9,8 @@ struct DecodedIRData {
     char name[32];
     uint16_t command;
     uint16_t address;
-    const char *protocol;
-    char *protocolName;
+    char protocol[16];
+    char protocolName[16];
 };
 class IRTools {
 public:
@@ -25,8 +25,8 @@ public:
 
     // Getter for the current irData
     DecodedIRData * getListSaved() const; // storage for data from sdcard
-    const char ** getListSavedNames();
-    size_t getListSavedSize() const;
+    char (*getListSavedNames())[15];
+    size_t getListSavedSize();
     DecodedIRData getCurrentIrData() const; // currently only for IR Read
 
 private:

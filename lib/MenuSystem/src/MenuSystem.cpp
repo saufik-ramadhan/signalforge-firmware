@@ -6,8 +6,8 @@ MenuSystem::MenuSystem(U8G2 &display, IRTools &irTools, SDTools &sdTools) :
                                         irTools(irTools),
                                         sdTools(sdTools),
                                         currentMenuState(currentMenuState),
-                                        menuItems(nullptr),
                                         itemCount(0),
+                                        menuItems({}),
                                         currentIndex(0),
                                         previousIndex(0),
                                         nextIndex(0),
@@ -20,9 +20,12 @@ int MenuSystem::getCurrentIndex() const {
   return currentIndex;
 }
 
-void MenuSystem::addMenu(const char **menuItems, uint8_t itemCount)
+void MenuSystem::addMenu(char menuItems[MENU_NUM_ITEMS][MENU_ITEM_LENGTH], size_t itemCount)
 {
-  this->menuItems = menuItems;
+  for (int i = 0; i < MENU_NUM_ITEMS; ++i) {
+    strncpy(this->menuItems[i], menuItems[i], MENU_ITEM_LENGTH - 1); // Copy string safely
+    this->menuItems[i][MENU_ITEM_LENGTH - 1] = '\0'; // Ensure null-termination
+  }
   this->itemCount = itemCount;
   currentIndex = 0;
   previousIndex = 0;
@@ -139,7 +142,7 @@ void MenuSystem::render(MenuState currentMenuState)
 void MenuSystem::drawMenu()
 {
   // selected item background
-  display.setFlipMode(1);
+  display.setFlipMode(0);
 
   display.drawBitmap(0, 22, 128/8, 21, bitmap_item_sel_outline);
 
