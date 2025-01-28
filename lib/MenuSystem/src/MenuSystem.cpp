@@ -61,7 +61,7 @@ void MenuSystem::render(MenuState currentMenuState){
     } // next item would be after last = make it the first
 
     display.firstPage();
-    do{
+    do {
         switch (currentMenuState){
             case INFRARED_MENU:
                 drawIRMenu();
@@ -84,12 +84,14 @@ void MenuSystem::render(MenuState currentMenuState){
             case INFRARED_MENU_SEND_LIST_FAILED:
                 infraredMenuSendListFailedScreen();
                 break;
+
             case INFRARED_MENU_READING_DONE_SAVING:
             case INFRARED_MENU_READING_ERROR:
             case INFRARED_MENU_SEND_SENDING:
             case INFRARED_MENU_LIST:
             case INFRARED_MENU_LIST_DELETE:
             case INFRARED_MENU_LIST_DELETE_SUCCESS:
+
             case WIFI_MENU_SCAN:
             case WIFI_MENU_SCAN_SCANNING:
             case WIFI_MENU_SCAN_LIST:
@@ -98,12 +100,15 @@ void MenuSystem::render(MenuState currentMenuState){
             case WIFI_MENU_DEAUTH_LIST:
             case WIFI_MENU_DEAUTH_ATTACKING:
             case WIFI_MENU_STATION:
+
             case BLE_MENU_SCAN:
             case BLE_MENU_RECEIVE:
             case BLE_MENU_SEND:
+
             case LORA_MENU_SEND:
             case LORA_MENU_RECEIVE:
             case LORA_MENU_INFO:
+
             case NFC_MENU_READING:
             case NFC_MENU_READING_DONE:
             case NFC_MENU_READING_FAILED:
@@ -114,12 +119,14 @@ void MenuSystem::render(MenuState currentMenuState){
             case NFC_MENU_LIST:
             case NFC_MENU_LIST_DELETE:
             case NFC_MENU_LIST_DELETE_SUCCESS:
+
             case MICROSD_MENU_INFO:
             case MICROSD_MENU_FORMAT:
             case MICROSD_MENU_FORMAT_DONE:
             case MICROSD_MENU_FORMAT_ERROR:
                 inDevelopment();
                 break;
+
             case MAIN_MENU:
             default:
                 drawMenu();
