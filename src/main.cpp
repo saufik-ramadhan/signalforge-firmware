@@ -204,20 +204,20 @@ void buttonMenuTask(void *parameter){
         if (xQueueReceive(buttonEventQueue, &event, portMAX_DELAY) == pdPASS){
             // Process the event
             switch (event.button){
-            case BUTTON_UP:
-                menu.navigateUp();
-                break;
-            case BUTTON_DOWN:
-                menu.navigateDown();
-                break;
-            case BUTTON_RIGHT:
-                menuNavigation(event);
-                break;
-            case BUTTON_LEFT:
-                menuNavigation(event);
-                break;
-            default:
-                break;
+                case BUTTON_UP:
+                    menu.navigateUp();
+                    break;
+                case BUTTON_DOWN:
+                    menu.navigateDown();
+                    break;
+                case BUTTON_RIGHT:
+                    menuNavigation(event);
+                    break;
+                case BUTTON_LEFT:
+                    menuNavigation(event);
+                    break;
+                default:
+                    break;
             }
         }
         msDelay(10);
@@ -237,10 +237,10 @@ void irTask(void *parameter){
                 break;
             case INFRARED_MENU_READING_DONE_SAVING:
                 csvFile = SD.open("/ircommand.csv");
-                if (!csvFile){
+                if (!csvFile) {
                     Serial.println("Failed to open file!");
                     currentMenuState = INFRARED_MENU_SEND_LIST_FAILED;
-                } else{
+                } else {
                     irDataCount = 0;
 
                     // read data rows + current row
