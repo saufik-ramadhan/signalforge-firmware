@@ -30,6 +30,7 @@ void handleButtonEvent(ButtonType button, ButtonState state) {
         Serial.println("Button Queue Full! event dropped :: FAILED");
     }
 }
+
 ButtonHandler buttonHandler(
     BUTTON_UP_PIN,
     BUTTON_DOWN_PIN,
@@ -37,7 +38,8 @@ ButtonHandler buttonHandler(
     BUTTON_RIGHT_PIN,
     -1,
     -1,
-    handleButtonEvent);
+    handleButtonEvent
+);
 
 // Top Level IR
 void receiverCallback() { currentMenuState = INFRARED_MENU_READING_DONE; }
@@ -59,7 +61,6 @@ MenuSystem menu(u8g2, irTools, sdTools);
 /** --- SD Card Handler and Subroutines --- */
 
 /** --- Button Handler and Pipeline (queue) --- */
-
 void buttonTask(void *parameter) {
     Serial.println("Task Button handler is active");
     while (1) {
@@ -77,6 +78,7 @@ void menuTask(void *parameter) {
         menu.render(currentMenuState);
     }
 }
+
 void menuNavigation(ButtonEvent event) {
     menuIdx = menu.getCurrentIndex();
     switch (currentMenuState) {
@@ -196,6 +198,7 @@ void menuNavigation(ButtonEvent event) {
         break;
     }
 }
+
 void buttonMenuTask(void *parameter){
     ButtonEvent event;
     while (true){
@@ -390,4 +393,5 @@ void setup() {
 }
 
 void loop() {
+    sDelay(1);
 }
