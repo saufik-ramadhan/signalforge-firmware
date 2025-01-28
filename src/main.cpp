@@ -58,8 +58,6 @@ SDTools sdTools(5);
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R2, /* reset=*/U8X8_PIN_NONE, /* clock=*/SCL_PIN, /* data=*/SDA_PIN); // ESP32 Thing, HW I2C with pin remapping
 MenuSystem menu(u8g2, irTools, sdTools);
 
-/** --- SD Card Handler and Subroutines --- */
-
 /** --- Button Handler and Pipeline (queue) --- */
 void buttonTask(void *parameter) {
     Serial.println("Task Button handler is active");
@@ -354,6 +352,92 @@ void irTask(void *parameter){
     }
 }
 /** END --- */
+
+
+// TODO:
+// Add each task executor
+//     SD files
+//          cat
+//          info
+//          dir/ls
+//          del format
+//          SD Loader
+//              Duplicate some of the task 
+//                  functionality on arduino
+//              Load confirm
+//              Add back button on task
+//     NFC
+//          Read
+//          Write
+//     RF
+//          Send
+//          Receive
+//          Prepare second item for demo
+//     Bluetooth
+//          Scan
+//          Announce
+//     Wifi
+//          Scan + Power
+//          Auth
+//          Deauth
+//          Sniff
+// Add menu display each
+// Remember to add state transition each
+
+// Add RF to menu
+// Run menu first to see how this works
+
+
+//////////////////////////
+// TODO: Hardware
+// Remove oled
+// Add battery
+// Add charger
+// Add switch
+// Add button
+// Reprint 3D
+    // Spacer
+    // OLED Hole
+/////////////////////////////////
+
+
+
+/** --- SD Card Handler and Subroutines --- */
+void sdCardTask(void *parameter) {
+    
+}
+/** END --- */
+
+/** --- NFC Task */
+void nfcTask(void *parameter) {
+
+}
+/** END --- */
+
+/** --- RF Task */
+void rfTask(void *parameter) {
+    
+}
+/** END --- */
+
+/** --- Bluetooth Task */
+void bluetoothTask(void *parameter) {
+    
+}
+/** END --- */
+
+/** --- Wifi Task Task */
+void wifiTask(void *parameter) {
+    
+}
+/** END --- */
+
+
+
+
+
+
+
 
 void setup() {
     Serial.begin(115200);

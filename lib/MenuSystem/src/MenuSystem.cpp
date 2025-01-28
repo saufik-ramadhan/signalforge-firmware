@@ -243,7 +243,7 @@ void MenuSystem::infraredMenuReadingErrorScreen(){
 
 void MenuSystem::infraredMenuSendScreen() {}
 
-void MenuSystem::infraredMenuSendListScreen(){
+void MenuSystem::infraredMenuSendListScreen() {
     drawList();
 }
 

@@ -33,10 +33,11 @@ const char *microsdMenuItems[2] = {
     "Format"
 };
 
-const char *menuItems[5] = {
+const char *menuItems[6] = {
     "Infrared",
     "NFC",
     "Wifi",
     "MicroSD",
-    "BLE"
+    "BLE",
+    "LoRa"
 };
