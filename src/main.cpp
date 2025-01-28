@@ -20,7 +20,11 @@ static const BaseType_t app_cpu = 0;
 MenuState currentMenuState = MAIN_MENU;
 int menuIdx = 0;
 
+
+
+//////////////////////////////////
 // Top Level Button
+//////////////////////////////////
 QueueHandle_t buttonEventQueue;
 void handleButtonEvent(ButtonType button, ButtonState state) {
     ButtonEvent event = {button, state};
@@ -41,7 +45,9 @@ ButtonHandler buttonHandler(
     handleButtonEvent
 );
 
+//////////////////////////////////
 // Top Level IR
+//////////////////////////////////
 void receiverCallback() { currentMenuState = INFRARED_MENU_READING_DONE; }
 IRTools irTools(receiverCallback);
 File csvFile;
@@ -51,12 +57,24 @@ char lineBuffer[128];
 char nameBuffer[128];
 int lineIndex = 0;
 
+//////////////////////////////////
 // Top Level SD Card
+//////////////////////////////////
 SDTools sdTools(5);
 
+//////////////////////////////////
 // Top Level Menu
+//////////////////////////////////
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R2, /* reset=*/U8X8_PIN_NONE, /* clock=*/SCL_PIN, /* data=*/SDA_PIN); // ESP32 Thing, HW I2C with pin remapping
 MenuSystem menu(u8g2, irTools, sdTools);
+
+
+
+
+
+
+
+
 
 /** --- Button Handler and Pipeline (queue) --- */
 void buttonTask(void *parameter) {
@@ -200,9 +218,9 @@ void menuNavigation(ButtonEvent event) {
 
 void buttonMenuTask(void *parameter){
     ButtonEvent event;
-    while (true){
+    while (true) {
         // Wait for an event to arrive in the queue
-        if (xQueueReceive(buttonEventQueue, &event, portMAX_DELAY) == pdPASS){
+        if (xQueueReceive(buttonEventQueue, &event, portMAX_DELAY) == pdPASS) {
             // Process the event
             switch (event.button){
                 case BUTTON_UP:
@@ -212,8 +230,6 @@ void buttonMenuTask(void *parameter){
                     menu.navigateDown();
                     break;
                 case BUTTON_RIGHT:
-                    menuNavigation(event);
-                    break;
                 case BUTTON_LEFT:
                     menuNavigation(event);
                     break;
@@ -390,6 +406,7 @@ void irTask(void *parameter) {
 //          Auth
 //          Deauth
 //          Sniff
+//
 // Add menu display each
 // Remember to add state transition each
 
