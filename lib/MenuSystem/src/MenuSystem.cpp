@@ -1,25 +1,30 @@
 #include "MenuSystem.h"
 #include "BitmapIcon.h"
 
-MenuSystem::MenuSystem(U8G2 &display, IRTools &irTools, SDTools &sdTools) : display(display),
-                                                                            irTools(irTools),
-                                                                            sdTools(sdTools),
-                                                                            currentMenuState(currentMenuState),
-                                                                            menuItems(nullptr),
-                                                                            itemCount(0),
-                                                                            currentIndex(0),
-                                                                            previousIndex(0),
-                                                                            nextIndex(0),
-                                                                            topIndex(0) {
+MenuSystem::MenuSystem(U8G2 &display, IRTools &irTools, SDTools &sdTools) :
+                                        display(display),
+                                        irTools(irTools),
+                                        sdTools(sdTools),
+                                        currentMenuState(currentMenuState),
+                                        itemCount(0),
+                                        menuItems({}),
+                                        currentIndex(0),
+                                        previousIndex(0),
+                                        nextIndex(0),
+                                        topIndex(0) {
     itemsPerPage = display.getDisplayHeight() / 10; // Assuming 10px per item row height
 }
 
-int MenuSystem::getCurrentIndex() const{
+int MenuSystem::getCurrentIndex() const {
     return currentIndex;
 }
 
-void MenuSystem::addMenu(const char **menuItems, uint8_t itemCount){
-    this->menuItems = menuItems;
+void MenuSystem::addMenu(char menuItems[MENU_NUM_ITEMS][MENU_ITEM_LENGTH], size_t itemCount)
+{
+    for (int i = 0; i < MENU_NUM_ITEMS; ++i) {
+        strncpy(this->menuItems[i], menuItems[i], MENU_ITEM_LENGTH - 1); // Copy string safely
+        this->menuItems[i][MENU_ITEM_LENGTH - 1] = '\0'; // Ensure null-termination
+    }
     this->itemCount = itemCount;
     currentIndex = 0;
     previousIndex = 0;
@@ -84,14 +89,14 @@ void MenuSystem::render(MenuState currentMenuState){
             case INFRARED_MENU_SEND_LIST_FAILED:
                 infraredMenuSendListFailedScreen();
                 break;
-
+            
             case INFRARED_MENU_READING_DONE_SAVING:
             case INFRARED_MENU_READING_ERROR:
             case INFRARED_MENU_SEND_SENDING:
             case INFRARED_MENU_LIST:
             case INFRARED_MENU_LIST_DELETE:
             case INFRARED_MENU_LIST_DELETE_SUCCESS:
-
+            
             case WIFI_MENU_SCAN:
             case WIFI_MENU_SCAN_SCANNING:
             case WIFI_MENU_SCAN_LIST:
@@ -139,7 +144,7 @@ void MenuSystem::render(MenuState currentMenuState){
 
 void MenuSystem::drawMenu(){
     // selected item background
-    display.setFlipMode(1);
+    display.setFlipMode(0);
 
     display.drawBitmap(0, 22, 128 / 8, 21, bitmap_item_sel_outline);
 

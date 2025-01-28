@@ -1,43 +1,45 @@
-const char *irMenuItems[3] = {
-    "IR Send",
-    "IR Read",
-    "IR List"
+const int MAX_NUM_ITEMS = 100;
+const int MAX_ITEM_LENGTH = 15;
+
+char irMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+    {"IR Send"},
+    {"IR Read"},
+    {"IR List"}  
 };
 
-const char *wifiMenuItems[3] = {
-    "WIFI Scan",
-    "WIFI Deauth",
-    "WIFI Station"
+char wifiMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+    {"WIFI Scan"},
+    {"WIFI Deauth"},
+    {"WIFI Station"}
 };
 
-const char *bleMenuItems[3] = {
-    "BLE Scan",
-    "BLE Send",
-    "BLE Receive"
+char bleMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+    {"BLE Scan"},
+    {"BLE Send"},
+    {"BLE Receive"}
 };
 
-const char *loraMenuItems[3] = {
-    "LoRa Send",
-    "LoRa Receive",
-    "LoRa Info"
+char loraMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+    {"LoRa Send"},
+    {"LoRa Receive"},
+    {"LoRa Info"}
 };
 
-const char *nfcMenuItems[3] = {
-    "NFC Read",
-    "NFC Send",
-    "NFC List"
+char nfcMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+    {"NFC Read"},
+    {"NFC Send"},
+    {"NFC List"}
 };
 
-const char *microsdMenuItems[2] = {
-    "Info",
-    "Format"
+char microsdMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+    {"Info"},
+    {"Format"}
 };
 
-const char *menuItems[6] = {
-    "Infrared",
-    "NFC",
-    "Wifi",
-    "MicroSD",
-    "BLE",
-    "LoRa"
+char menuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+    {"Infrared"},
+    {"NFC"},
+    {"Wifi"},
+    {"MicroSD"},
+    {"BLE"}
 };
