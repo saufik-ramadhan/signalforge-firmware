@@ -242,63 +242,63 @@ void irTask(void *parameter) {
                     Serial.println("Failed to open file!");
                     currentMenuState = INFRARED_MENU_SEND_LIST_FAILED;
                 } else {
-                  irDataCount = 0;
+                    irDataCount = 0;
 
-                  // read data rows + current row
-                  while (sdTools.readLine(csvFile, lineBuffer, sizeof(lineBuffer))) {
-                      char name[32], protocol[16];
-                      uint16_t command, address;
-                      if (sscanf(lineBuffer, "%31[^;];0x%hx;0x%hx;%s", name, &command, &address, protocol) == 4) {
-                          strcpy(irDataArray[irDataCount].name, name);
-                          irDataArray[irDataCount].command = command;
-                          irDataArray[irDataCount].address = address;
-                          strcpy(irDataArray[irDataCount].protocol, protocol);
-                          irDataCount++;
-                      }
-                      Serial.println(lineBuffer);
-                  }
+                    // read data rows + current row
+                    while (sdTools.readLine(csvFile, lineBuffer, sizeof(lineBuffer))) {
+                        char name[32], protocol[16];
+                        uint16_t command, address;
+                        if (sscanf(lineBuffer, "%31[^;];0x%hx;0x%hx;%s", name, &command, &address, protocol) == 4) {
+                            strcpy(irDataArray[irDataCount].name, name);
+                            irDataArray[irDataCount].command = command;
+                            irDataArray[irDataCount].address = address;
+                            strcpy(irDataArray[irDataCount].protocol, protocol);
+                            irDataCount++;
+                        }
+                        Serial.println(lineBuffer);
+                    }
 
-                  DecodedIRData currentIrData = irTools.getCurrentIrData();
-                  sprintf(nameBuffer, "%02x_%02x_%s", currentIrData.address, currentIrData.command, currentIrData.protocol);
-                  strcpy(irDataArray[irDataCount].name, nameBuffer);
-                  irDataArray[irDataCount].address = irTools.getCurrentIrData().address;
-                  irDataArray[irDataCount].command = irTools.getCurrentIrData().command;
-                  strcpy(irDataArray[irDataCount].protocol, irTools.getCurrentIrData().protocol);
-                  irDataCount++;
-                  // --- end
-                  csvFile.close();
+                    DecodedIRData currentIrData = irTools.getCurrentIrData();
+                    sprintf(nameBuffer, "%02x_%02x_%s", currentIrData.address, currentIrData.command, currentIrData.protocol);
+                    strcpy(irDataArray[irDataCount].name, nameBuffer);
+                    irDataArray[irDataCount].address = irTools.getCurrentIrData().address;
+                    irDataArray[irDataCount].command = irTools.getCurrentIrData().command;
+                    strcpy(irDataArray[irDataCount].protocol, irTools.getCurrentIrData().protocol);
+                    irDataCount++;
+                    // --- end
+                    csvFile.close();
 
-                  csvFile = SD.open("/ircommand.csv", FILE_WRITE, false);
-                  Serial.println("writing");
-                  if(!csvFile) {
-                      Serial.println("Failed to open file for reading");
-                  } else {
-                      // Writing New File
-                      // Serial.println("Writing File!");
-                      // csvFile.println("name;command;address;protocol");
-                      for (int i = 0; i < irDataCount; i++) {
-                          Serial.printf("%s;0x%02X;0x%02X;%s\n", 
-                            irDataArray[i].name, 
-                            irDataArray[i].command, 
-                            irDataArray[i].address,
-                            irDataArray[i].protocol
-                          );
-                          // snprintf(lineBuffer, sizeof(lineBuffer), "%s;0x%02X;0x%02X;%s\n", 
-                          // irDataArray[i].name, 
-                          // irDataArray[i].command, 
-                          // irDataArray[i].address,
-                          // irDataArray[i].protocol);
-                          // if(csvFile.print(lineBuffer)) {
-                          //   Serial.println("Row Added !");
-                          // } else {
-                          //   Serial.println("Row add failed !");
-                          // }
-                      }
-                      // Serial.println("Writing File DONE!");
-                  }
-                  csvFile.close();
-                  msDelay(10);
-                  currentMenuState = INFRARED_MENU_READING;
+                    csvFile = SD.open("/ircommand.csv", FILE_WRITE, false);
+                    Serial.println("writing");
+                    if(!csvFile) {
+                        Serial.println("Failed to open file for reading");
+                    } else {
+                        // Writing New File
+                        // Serial.println("Writing File!");
+                        // csvFile.println("name;command;address;protocol");
+                        for (int i = 0; i < irDataCount; i++) {
+                            Serial.printf("%s;0x%02X;0x%02X;%s\n", 
+                                irDataArray[i].name, 
+                                irDataArray[i].command, 
+                                irDataArray[i].address,
+                                irDataArray[i].protocol
+                            );
+                            // snprintf(lineBuffer, sizeof(lineBuffer), "%s;0x%02X;0x%02X;%s\n", 
+                            // irDataArray[i].name, 
+                            // irDataArray[i].command, 
+                            // irDataArray[i].address,
+                            // irDataArray[i].protocol);
+                            // if(csvFile.print(lineBuffer)) {
+                            //   Serial.println("Row Added !");
+                            // } else {
+                            //   Serial.println("Row add failed !");
+                            // }
+                        }
+                        // Serial.println("Writing File DONE!");
+                    }
+                    csvFile.close();
+                    msDelay(10);
+                    currentMenuState = INFRARED_MENU_READING;
                 }
                 break;
             case INFRARED_MENU_SEND:
