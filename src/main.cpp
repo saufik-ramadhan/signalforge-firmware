@@ -82,32 +82,32 @@ void menuNavigation(ButtonEvent event) {
     menuIdx = menu.getCurrentIndex();
     switch (currentMenuState) {
         case MAIN_MENU:
-              if (event.button == BUTTON_RIGHT) {
+            if (event.button == BUTTON_RIGHT) {
                 switch (menuIdx) {
-                  case 0:
+                case 0:
                     menu.addMenu(irMenuItems, 3);
                     currentMenuState = INFRARED_MENU;
                     break;
-                  case 1:
+                case 1:
                     menu.addMenu(nfcMenuItems, 3);
                     currentMenuState = NFC_MENU;
                     break;
-                  case 2:
+                case 2:
                     menu.addMenu(wifiMenuItems, 3);
                     currentMenuState = WIFI_MENU;
                     break;
-                  case 3:
+                case 3:
                     menu.addMenu(microsdMenuItems, 2);
                     currentMenuState = MICROSD_MENU;
                     break;
-                  case 4:
+                case 4:
                     menu.addMenu(bleMenuItems, 3);
                     currentMenuState = BLE_MENU; // Fixed from INFRARED_MENU
                     break;
                 }
-              } else if (event.button == BUTTON_LEFT) {
-              menu.addMenu(menuItems, 5);
-              currentMenuState = MAIN_MENU;
+            } else if (event.button == BUTTON_LEFT) {
+                menu.addMenu(menuItems, 5);
+                currentMenuState = MAIN_MENU;
             }
             break;
 
@@ -191,7 +191,7 @@ void menuNavigation(ButtonEvent event) {
         case NFC_MENU_LIST:
         case NFC_MENU_LIST_DELETE:
         case NFC_MENU_LIST_DELETE_SUCCESS:
-            if (event.button == BUTTON_LEFT){
+            if (event.button == BUTTON_LEFT) {
                 currentMenuState = NFC_MENU;
             }
             break;
@@ -458,8 +458,7 @@ void setup() {
     /** SD CARD */
     if (!sdTools.begin()) {
         Serial.println("SD card initialization :: FAILED!");
-        while (1)
-            ;
+        while (1);
     } // define sdcard tools
     Serial.print("Card Type: ");
     Serial.println(sdTools.getCardType());
