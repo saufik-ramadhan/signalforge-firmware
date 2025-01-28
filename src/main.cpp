@@ -363,55 +363,6 @@ void irTask(void *parameter) {
 /** END --- */
 
 
-// TODO:
-// Add each task executor
-//     SD files
-//          cat
-//          info
-//          dir/ls
-//          del format
-//          SD Loader
-//              Duplicate some of the task 
-//                  functionality on arduino
-//              Load confirm
-//              Add back button on task
-//     NFC
-//          Read
-//          Write
-//     RF
-//          Send
-//          Receive
-//          Prepare second item for demo
-//     Bluetooth
-//          Scan
-//          Announce
-//     Wifi
-//          Scan + Power
-//          Auth
-//          Deauth
-//          Sniff
-// Add menu display each
-// Remember to add state transition each
-
-// Add RF to menu
-// Run menu first to see how this works
-// Duplicate button right and ok, left and back
-
-
-//////////////////////////
-// TODO: Hardware
-// Remove oled
-// Add battery
-// Add charger
-// Add switch
-// Add button
-// Reprint 3D
-    // Spacer
-    // OLED Hole
-/////////////////////////////////
-
-
-
 /** --- SD Card Handler and Subroutines --- */
 void sdCardTask(void *parameter) {
     
