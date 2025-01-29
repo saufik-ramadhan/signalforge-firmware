@@ -8,14 +8,16 @@
 #include <IRTools.h>
 #include <SDTools.h>
 
-#define MENU_NUM_ITEMS 100
-#define MENU_ITEM_LENGTH 15
+#include <global-configs.h>
+
+// #define MENU_NUM_ITEMS 100
+// #define MENU_ITEM_LENGTH 15
 
 class MenuSystem {
-  public:
+    public:
         MenuSystem(U8G2 &display, IRTools &irTool, SDTools &sdTools);
 
-        void addMenu(char menuItems[MENU_NUM_ITEMS][MENU_ITEM_LENGTH], size_t itemCount);
+        void addMenu(char menuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH], size_t itemCount);
         void navigateUp();
         void navigateDown();
         void select();
@@ -25,12 +27,12 @@ class MenuSystem {
         // Getter for the current index
         int getCurrentIndex() const;
 
-  private:
+    private:
         U8G2 &display;
         IRTools &irTools;
         SDTools &sdTools;
         MenuState currentMenuState;
-        char menuItems[MENU_NUM_ITEMS][MENU_ITEM_LENGTH];
+        char menuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH];
         uint8_t itemCount;
         int pageState;
         int currentIndex;

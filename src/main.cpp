@@ -88,7 +88,7 @@ void buttonTask(void *parameter) {
 
 /** --- Menu Handler and task (OLED --- u8g2 Library) --- */
 void menuTask(void *parameter) {
-    menu.addMenu(menuItems, 5); // adding menus
+    menu.addMenu(menuItems, 6); // adding menus
     Serial.println("Menu Task Running :: SUCCESS");
     while (1) {
         menu.render(currentMenuState);
@@ -102,26 +102,26 @@ void menuNavigation(ButtonEvent event) {
         case MAIN_MENU:
             if (event.button == BUTTON_RIGHT) {
                 switch (menuIdx) {
-                case 0:
-                    menu.addMenu(irMenuItems, 3);
-                    currentMenuState = INFRARED_MENU;
-                    break;
-                case 1:
-                    menu.addMenu(nfcMenuItems, 3);
-                    currentMenuState = NFC_MENU;
-                    break;
-                case 2:
-                    menu.addMenu(wifiMenuItems, 3);
-                    currentMenuState = WIFI_MENU;
-                    break;
-                case 3:
-                    menu.addMenu(microsdMenuItems, 2);
-                    currentMenuState = MICROSD_MENU;
-                    break;
-                case 4:
-                    menu.addMenu(bleMenuItems, 3);
-                    currentMenuState = BLE_MENU; // Fixed from INFRARED_MENU
-                    break;
+                    case 0:
+                        menu.addMenu(irMenuItems, 3);
+                        currentMenuState = INFRARED_MENU;
+                        break;
+                    case 1:
+                        menu.addMenu(nfcMenuItems, 3);
+                        currentMenuState = NFC_MENU;
+                        break;
+                    case 2:
+                        menu.addMenu(wifiMenuItems, 3);
+                        currentMenuState = WIFI_MENU;
+                        break;
+                    case 3:
+                        menu.addMenu(microsdMenuItems, 2);
+                        currentMenuState = MICROSD_MENU;
+                        break;
+                    case 4:
+                        menu.addMenu(bleMenuItems, 3);
+                        currentMenuState = BLE_MENU; // Fixed from INFRARED_MENU
+                        break;
                 }
             } else if (event.button == BUTTON_LEFT) {
                 menu.addMenu(menuItems, 5);
@@ -373,7 +373,7 @@ void irTask(void *parameter) {
             default:
                 break;
         }
-        msDelay(10);
+        msDelay(100);
     }
 }
 /** END --- */
@@ -397,8 +397,9 @@ void irTask(void *parameter) {
 //     RF
 //          Send
 //          Receive
-//          Prepare second item for demo
+//              Prepare second item for demo
 //     Bluetooth
+//          Start device
 //          Scan
 //          Announce
 //     Wifi

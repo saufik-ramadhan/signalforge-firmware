@@ -94,16 +94,16 @@ void MenuSystem::render(MenuState currentMenuState){
             case INFRARED_MENU_READING_ERROR:
             case INFRARED_MENU_SEND_SENDING:
             case INFRARED_MENU_LIST:
-            case INFRARED_MENU_LIST_DELETE:
-            case INFRARED_MENU_LIST_DELETE_SUCCESS:
+                case INFRARED_MENU_LIST_DELETE:
+                case INFRARED_MENU_LIST_DELETE_SUCCESS:
             
             case WIFI_MENU_SCAN:
-            case WIFI_MENU_SCAN_SCANNING:
-            case WIFI_MENU_SCAN_LIST:
+                case WIFI_MENU_SCAN_SCANNING:
+                case WIFI_MENU_SCAN_LIST:
             case WIFI_MENU_DEAUTH:
-            case WIFI_MENU_DEAUTH_SCANNING:
-            case WIFI_MENU_DEAUTH_LIST:
-            case WIFI_MENU_DEAUTH_ATTACKING:
+                case WIFI_MENU_DEAUTH_SCANNING:
+                case WIFI_MENU_DEAUTH_LIST:
+                case WIFI_MENU_DEAUTH_ATTACKING:
             case WIFI_MENU_STATION:
 
             case BLE_MENU_SCAN:
@@ -115,20 +115,20 @@ void MenuSystem::render(MenuState currentMenuState){
             case LORA_MENU_INFO:
 
             case NFC_MENU_READING:
-            case NFC_MENU_READING_DONE:
-            case NFC_MENU_READING_FAILED:
+                case NFC_MENU_READING_DONE:
+                case NFC_MENU_READING_FAILED:
             case NFC_MENU_SEND:
-            case NFC_MENU_SEND_LIST:
-            case NFC_MENU_SEND_SENDING:
-            case NFC_MENU_SEND_DONE:
+                case NFC_MENU_SEND_LIST:
+                case NFC_MENU_SEND_SENDING:
+                case NFC_MENU_SEND_DONE:
             case NFC_MENU_LIST:
-            case NFC_MENU_LIST_DELETE:
-            case NFC_MENU_LIST_DELETE_SUCCESS:
+                case NFC_MENU_LIST_DELETE:
+                case NFC_MENU_LIST_DELETE_SUCCESS:
 
             case MICROSD_MENU_INFO:
             case MICROSD_MENU_FORMAT:
-            case MICROSD_MENU_FORMAT_DONE:
-            case MICROSD_MENU_FORMAT_ERROR:
+                case MICROSD_MENU_FORMAT_DONE:
+                case MICROSD_MENU_FORMAT_ERROR:
                 inDevelopment();
                 break;
 
