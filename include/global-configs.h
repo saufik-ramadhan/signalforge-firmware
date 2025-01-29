@@ -50,8 +50,7 @@ char loraMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
 };
 
 char nfcMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
-    {"NFC Read"},
-    {"NFC Write"}
+    {"NFC Read"}
 };
 
 char microsdMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
