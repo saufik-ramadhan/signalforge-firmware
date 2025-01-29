@@ -59,6 +59,7 @@ private:
   void infraredMenuSendListFailedScreen();
   void infraredMenuSendSendingScreen();
   void infraredMenuListScreen();
+  void infraredMenuListDoneScreen();
   void infraredMenuListDeleteScreen();
   void infraredMenuListDeleteSuccessScreen();
 

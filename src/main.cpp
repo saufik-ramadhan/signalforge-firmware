@@ -202,11 +202,13 @@ void menuNavigation(ButtonEvent event)
     case INFRARED_MENU_READING_ERROR:
     case INFRARED_MENU_SEND_SENDING:
     case INFRARED_MENU_LIST:
+    case INFRARED_MENU_LIST_DONE:
     case INFRARED_MENU_LIST_DELETE:
     case INFRARED_MENU_LIST_DELETE_SUCCESS:
         if (event.button == BUTTON_LEFT)
         {
             currentMenuState = INFRARED_MENU;
+            menu.addMenu(irMenuItems, 3);
         }
         break;
 
@@ -222,6 +224,7 @@ void menuNavigation(ButtonEvent event)
     case NFC_MENU_LIST_DELETE_SUCCESS:
         if (event.button == BUTTON_LEFT)
         {
+            menu.addMenu(nfcMenuItems, 3);
             currentMenuState = NFC_MENU;
         }
         break;
@@ -286,8 +289,9 @@ void irTask(void *parameter)
             else
             {
                 irDataCount = 0;
-                if (sdTools.readLine(csvFile, lineBuffer, sizeof(lineBuffer))) {
-                  Serial.println(lineBuffer); // Print header to Serial (optional)
+                if (sdTools.readLine(csvFile, lineBuffer, sizeof(lineBuffer)))
+                {
+                    Serial.println(lineBuffer); // Print header to Serial (optional)
                 }
                 // Display data rows (next line)
                 while (sdTools.readLine(csvFile, lineBuffer, sizeof(lineBuffer)))
@@ -410,16 +414,62 @@ void irTask(void *parameter)
                 currentMenuState = INFRARED_MENU_SEND_LIST;
             }
             break;
-        case INFRARED_MENU_SEND_LIST:
-            // Listen two an event from queue
-            // if (xQueueReceive(buttonEventQueue, &event, portMAX_DELAY) == pdPASS)
-            // {
-            //   if(event.button == BUTTON_RIGHT) {
-            //     Serial.print("Hoyaaaa");
-            //     irTools.send(menuIdx);
-            //   }
-            // }
-            // msDelay(10);
+        case INFRARED_MENU_LIST:
+            csvFile = sdTools.openFile("/ircommand.csv");
+            if (!csvFile)
+            {
+                Serial.println("Failed to open file!");
+                currentMenuState = INFRARED_MENU_SEND_LIST_FAILED;
+            }
+            else
+            {
+                irDataCount = 0;
+
+                // Read the first row (header)
+                // if (sdTools.readLine(csvFile, lineBuffer, sizeof(lineBuffer))) {
+                //   Serial.println(lineBuffer); // Print header to Serial (optional)
+                // }
+
+                // skip first line of the file
+                if (currentPosition == 0)
+                {
+                    csvFile.seek(38); // 38 is 37 byte size of the first line (header) + 1 for current position
+                }
+
+                // check current position after reading first row (byte)
+                // note: in the end there is \n added one byte
+                Serial.print("Current Position :");
+                Serial.println(csvFile.position(), DEC);
+
+                // Display data rows (next line)
+                while (sdTools.readLine(csvFile, lineBuffer, sizeof(lineBuffer)))
+                { // limit buffer to 5 lines of 128 characters
+                    char name[32], protocol[16];
+                    uint16_t command, address;
+
+                    if (sscanf(lineBuffer, "%31[^;];0x%hx;0x%hx;%15[^;]", name, &command, &address, protocol) == 4)
+                    {
+                        strcpy(irDataArray[irDataCount].name, name);
+                        irDataArray[irDataCount].command = command;
+                        irDataArray[irDataCount].address = address;
+                        strcpy(irDataArray[irDataCount].protocol, protocol);
+                        irDataCount++;
+                    }
+                }
+
+                currentPosition = csvFile.position();
+
+                Serial.print("2nd Current Position (after reading data):");
+                Serial.println(csvFile.position(), DEC);
+
+                // this is where you hold buffer it should be limited to 5
+                irTools.setListSaved(irDataArray, irDataCount);
+
+                csvFile.close();
+                menu.addMenu(irTools.getListSavedNames(), irTools.getListSavedSize());
+                msDelay(10);
+                currentMenuState = INFRARED_MENU_LIST_DONE;
+            }
             break;
         case INFRARED_MENU_SEND_LIST_FAILED:
             break;

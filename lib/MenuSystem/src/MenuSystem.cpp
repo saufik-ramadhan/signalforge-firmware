@@ -41,29 +41,37 @@ void MenuSystem::addMenu(char menuItems[MENU_NUM_ITEMS][MENU_ITEM_LENGTH], size_
 
 void MenuSystem::navigateUp(MenuState currentMenuState)
 {
-  if (currentMenuState == INFRARED_MENU_SEND_LIST) {
-    if (currentIndex > 0) {
+  switch(currentMenuState) {
+    case INFRARED_MENU_SEND_LIST:
+    case INFRARED_MENU_LIST_DONE:
+      if (currentIndex > 0) {
+        currentIndex--;
+      }
+      break;
+    default: 
       currentIndex--;
-    }
-  } else {
-    currentIndex--;
-    if (currentIndex < 0) {
-      currentIndex = itemCount - 1;
-    }
+      if (currentIndex < 0) {
+        currentIndex = itemCount - 1;
+      }
+      break;
   }
 }
 
 void MenuSystem::navigateDown(MenuState currentMenuState)
 {
-  if (currentMenuState == INFRARED_MENU_SEND_LIST) {
-    if (currentIndex < itemCount - 1) {
+  switch(currentMenuState) {
+    case INFRARED_MENU_SEND_LIST:
+    case INFRARED_MENU_LIST_DONE:
+      if (currentIndex < itemCount - 1) {
+        currentIndex++;
+      }
+      break;
+    default: 
       currentIndex++;
-    }
-  } else {
-    currentIndex++;
-    if (currentIndex >= itemCount) {
-      currentIndex = 0;
-    }
+      if (currentIndex >= itemCount) {
+        currentIndex = 0;
+      }
+      break;
   }
 }
 
@@ -79,21 +87,24 @@ void MenuSystem::back()
 
 void MenuSystem::render(MenuState currentMenuState)
 {
-  if(currentMenuState == INFRARED_MENU_SEND_LIST) {
-    currentIndexP1 = (currentIndex / 3) * 3;
-    currentIndexP2 = currentIndexP1 + 1;
-    currentIndexP3 = currentIndexP1 + 2;
-  } 
-  else {
-    // set correct values for previous and next items
-    previousIndex = currentIndex - 1;
-    if (previousIndex < 0) {
-      previousIndex = itemCount - 1;
-    }
-    nextIndex = currentIndex + 1;  
-    if (nextIndex >= itemCount) {
-      nextIndex = 0;
-    } // next item would be after last = make it the first
+  switch(currentMenuState) {
+    case INFRARED_MENU_SEND_LIST:
+    case INFRARED_MENU_LIST_DONE:
+      currentIndexP1 = (currentIndex / 3) * 3;
+      currentIndexP2 = currentIndexP1 + 1;
+      currentIndexP3 = currentIndexP1 + 2;
+      break;
+    default: 
+      // set correct values for previous and next items
+      previousIndex = currentIndex - 1;
+      if (previousIndex < 0) {
+        previousIndex = itemCount - 1;
+      }
+      nextIndex = currentIndex + 1;  
+      if (nextIndex >= itemCount) {
+        nextIndex = 0;
+      } // next item would be after last = make it the first
+      break;
   }
 
   display.firstPage();
@@ -120,6 +131,9 @@ void MenuSystem::render(MenuState currentMenuState)
         break;
       case INFRARED_MENU_READING_DONE_SAVING:
         infraredMenuReadingDoneSavingScreen();
+        break;
+      case INFRARED_MENU_LIST_DONE:
+        infraredMenuListDoneScreen();
         break;
       case INFRARED_MENU_READING_ERROR:
       case INFRARED_MENU_SEND_SENDING:
@@ -286,6 +300,9 @@ void MenuSystem::infraredMenuSendListFailedScreen() {
 }
 void MenuSystem::infraredMenuSendSendingScreen() {}
 void MenuSystem::infraredMenuListScreen() {}
+void MenuSystem::infraredMenuListDoneScreen() {
+  drawList();
+}
 void MenuSystem::infraredMenuListDeleteScreen() {}
 void MenuSystem::infraredMenuListDeleteSuccessScreen() {}
 
