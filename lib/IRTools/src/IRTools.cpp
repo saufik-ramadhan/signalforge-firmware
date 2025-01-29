@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "PinDefinitionsAndMore.h"
 #include "IRremote.hpp"
+
 // Constructor to initialize pins
 IRTools::IRTools(IRReceiveCallback callback) : irData(irData), listIrData(listIrData) {
     this->callback = callback;
@@ -63,14 +64,14 @@ DecodedIRData * IRTools::getListSaved() const {
     return listIrData;
 }
 
-char (*IRTools::getListSavedNames())[15] {
+char (*IRTools::getListSavedNames())[MAX_ITEM_LENGTH] {
     // Static array to hold menu items
-    static char names[100][15]; // Fixed-size array for 100 items, each of 15 chars
+    static char names[MAX_NUM_ITEMS][MAX_ITEM_LENGTH]; // Fixed-size array for 100 items, each of 15 chars
     
     // Copy the names to the static array (up to 15 chars)
     for (size_t i = 0; i < listIrDataSize; ++i) {
-        strncpy(names[i], listIrData[i].name, 15);
-        names[i][14] = '\0'; // Ensure null termination
+        strncpy(names[i], listIrData[i].name, MAX_ITEM_LENGTH);
+        names[i][MAX_ITEM_LENGTH-1] = '\0'; // Ensure null termination
     }
 
     return names;  // Return the pointer to the static array

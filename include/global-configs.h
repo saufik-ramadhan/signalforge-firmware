@@ -8,7 +8,7 @@
 #define GLOBAL_CONFIGS_H
 
 #define MAX_NUM_ITEMS 10
-#define MAX_ITEM_LENGTH 30
+#define MAX_ITEM_LENGTH 40
 
 char irMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
     {"IR Send"},
@@ -33,20 +33,20 @@ char menuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
 
 char wifiMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
     {"WIFI Scan"},
+    {"WIFI Connect"},
     {"WIFI Deauth"},
+    {"WIFI Access Point"},
     {"WIFI Station"}
 };
 
 char bleMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
-    {"BLE Start"},
-    {"BLE Scan"},
-    {"BLE Receive"}
+    {"BLE Scanner"},
+    {"BLE Receiver"}
 };
 
 char loraMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
     {"LoRa Send"},
-    {"LoRa Receive"},
-    {"LoRa Info"}
+    {"LoRa Receive"}
 };
 
 char nfcMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {

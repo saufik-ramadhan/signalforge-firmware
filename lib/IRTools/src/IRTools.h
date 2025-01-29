@@ -2,6 +2,7 @@
 #define IR_TOOLS_H
 
 #include <Arduino.h>
+#include "global-configs.h"
 
 typedef void (*IRReceiveCallback)();
 
@@ -25,7 +26,7 @@ public:
 
     // Getter for the current irData
     DecodedIRData * getListSaved() const; // storage for data from sdcard
-    char (*getListSavedNames())[15];
+    char (*getListSavedNames())[MAX_ITEM_LENGTH];
     size_t getListSavedSize();
     DecodedIRData getCurrentIrData() const; // currently only for IR Read
 
