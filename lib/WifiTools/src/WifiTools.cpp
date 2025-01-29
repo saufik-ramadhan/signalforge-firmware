@@ -7,31 +7,67 @@ wifi_promiscuous_filter_t WiFiModeSwitcher::filter = {
 };
 
 WiFiModeSwitcher::WiFiModeSwitcher(const char* ap_ssid, const char* ap_password) 
-    : currentMode(STA_MODE), ap_ssid(ap_ssid), ap_password(ap_password) {
+    : currentMode(STA_MODE), ap_ssid(ap_ssid), ap_password(ap_password), lastScanTime(0) {
     instance = this;
 }
 
 void WiFiModeSwitcher::begin() {
     Serial.begin(115200);
-    printCommands();
+    // printCommands();
     setMode(STA_MODE);
 }
 
-void WiFiModeSwitcher::handleSerial() {
-    if (Serial.available() > 0) {
-        char command = Serial.read();
-        switch (command) {
-            case '1':
-                setMode(STA_MODE);
-                break;
-            case '2':
-                setMode(AP_MODE);
-                break;
-            case '3':
-                setMode(SNIFFER_MODE);
-                break;
+void WiFiModeSwitcher::scanNetworks() {
+    Serial.println("Scanning for networks...");
+    int numNetworks = WiFi.scanNetworks();
+    lastScanTime = millis();
+    
+    if (numNetworks == 0) {
+        Serial.println("No networks found");
+    } else {
+        Serial.printf("\nNetworks found: %d\n", numNetworks);
+        for (int i = 0; i < numNetworks; ++i) {
+            printNetworkInfo(i);
         }
     }
+    Serial.println("");
+}
+
+void WiFiModeSwitcher::printNetworkInfo(int networkIndex) {
+    // Print SSID and RSSI for each network
+    Serial.printf("%2d", networkIndex + 1);
+    Serial.print(") ");
+    Serial.print(WiFi.SSID(networkIndex));
+    Serial.print(" (");
+    Serial.print(WiFi.RSSI(networkIndex));
+    Serial.print("dBm) CH:");
+    Serial.print(WiFi.channel(networkIndex));
+    Serial.print(" ");
+    
+    // Print encryption type
+    switch (WiFi.encryptionType(networkIndex)) {
+        case WIFI_AUTH_OPEN:
+            Serial.print("Open");
+            break;
+        case WIFI_AUTH_WEP:
+            Serial.print("WEP");
+            break;
+        case WIFI_AUTH_WPA_PSK:
+            Serial.print("WPA-PSK");
+            break;
+        case WIFI_AUTH_WPA2_PSK:
+            Serial.print("WPA2-PSK");
+            break;
+        case WIFI_AUTH_WPA_WPA2_PSK:
+            Serial.print("WPA/WPA2-PSK");
+            break;
+        case WIFI_AUTH_WPA2_ENTERPRISE:
+            Serial.print("WPA2-Enterprise");
+            break;
+        default:
+            Serial.print("Unknown");
+    }
+    Serial.println();
 }
 
 WiFiModeSwitcher::Mode WiFiModeSwitcher::getCurrentMode() const {
@@ -66,6 +102,8 @@ void WiFiModeSwitcher::cleanup() {
 void WiFiModeSwitcher::setupSTAMode() {
     WiFi.mode(WIFI_MODE_STA);
     Serial.println("Switched to STA mode");
+    Serial.println("Press '4' to scan for networks");
+    scanNetworks(); // Initial scan
 }
 
 void WiFiModeSwitcher::setupAPMode() {
@@ -101,14 +139,52 @@ void WiFiModeSwitcher::snifferCallback(void* buf, wifi_promiscuous_pkt_type_t ty
     Serial.println();
 }
 
+
+
+
+
+
+
+
+
+void WiFiModeSwitcher::handleSerial() {
+    // Check for periodic scan in STA mode
+    if (currentMode == STA_MODE && 
+        (millis() - lastScanTime >= SCAN_INTERVAL)) {
+        scanNetworks();
+    }
+
+    if (Serial.available() > 0) {
+        char command = Serial.read();
+        switch (command) {
+            case '1':
+                setMode(STA_MODE);
+                break;
+            case '2':
+                setMode(AP_MODE);
+                break;
+            case '3':
+                setMode(SNIFFER_MODE);
+                break;
+            case '4':
+                if (currentMode == STA_MODE) {
+                    scanNetworks();
+                } else {
+                    Serial.println("Scanning only available in STA mode");
+                }
+                break;
+        }
+    }
+}
+
 void WiFiModeSwitcher::printCommands() {
     Serial.println("ESP32 WiFi Mode Switcher");
     Serial.println("Commands: ");
     Serial.println("'1' - Switch to STA mode");
     Serial.println("'2' - Switch to AP mode");
     Serial.println("'3' - Switch to Sniffer mode");
+    Serial.println("'4' - Scan networks (in STA mode)");
 }
-
 
 
 // WifiTools::WifiTools() {

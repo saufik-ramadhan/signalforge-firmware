@@ -25,21 +25,21 @@ class ESP32_BLE_Multi::ServerCallbacks : public BLEServerCallbacks {
 
 // Constructor
 ESP32_BLE_Multi::ESP32_BLE_Multi(
-    const char* deviceName,
-    const char* serviceUUID,
-    const char* charUUID
-) : DEVICE_NAME(deviceName)
-  , SERVICE_UUID(serviceUUID)
-  , CHARACTERISTIC_UUID(charUUID)
-  , SCAN_TIME(5)
-  , pBLEScan(nullptr)
-  , pServer(nullptr)
-  , pClient(nullptr)
-  , pAdvertising(nullptr)
-  , pService(nullptr)
-  , pCharacteristic(nullptr)
-  , deviceConnected(false)
-  , currentMode(-1) {
+        const char* deviceName,
+        const char* serviceUUID,
+        const char* charUUID
+    ) : DEVICE_NAME(deviceName),
+     SERVICE_UUID(serviceUUID),
+     CHARACTERISTIC_UUID(charUUID),
+     SCAN_TIME(5),
+     pBLEScan(nullptr),
+     pServer(nullptr),
+     pClient(nullptr),
+     pAdvertising(nullptr),
+     pService(nullptr),
+     pCharacteristic(nullptr),
+     deviceConnected(false),
+     currentMode(-1) {
     Serial.begin(115200);
     Serial.println("ESP32 BLE Multi-Mode Device Initialized");
 }
@@ -67,6 +67,8 @@ void ESP32_BLE_Multi::initBLE() {
     BLEDevice::init(DEVICE_NAME);
     Serial.println("BLE Device initialized");
 }
+
+
 
 bool ESP32_BLE_Multi::startScanning() {
     try {
@@ -156,6 +158,8 @@ bool ESP32_BLE_Multi::startClient() {
     }
 }
 
+
+
 int ESP32_BLE_Multi::getCurrentMode() const {
     return currentMode;
 }
@@ -176,3 +180,4 @@ void ESP32_BLE_Multi::end() {
     cleanupCurrentMode();
     currentMode = -1;
 }
+

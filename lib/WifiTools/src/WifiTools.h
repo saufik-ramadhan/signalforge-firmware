@@ -43,6 +43,7 @@ class WiFiModeSwitcher {
         void handleSerial();
         Mode getCurrentMode() const;
         void setMode(Mode newMode);
+        void scanNetworks(); // New method for network scanning
 
     private:
         Mode currentMode;
@@ -50,6 +51,8 @@ class WiFiModeSwitcher {
         const char* ap_password;
         static wifi_promiscuous_filter_t filter;
         static WiFiModeSwitcher* instance;
+        unsigned long lastScanTime;    // Track last scan time
+        static const unsigned long SCAN_INTERVAL = 10000; // Scan every 10 seconds
 
         // Private methods
         void cleanup();
@@ -58,9 +61,11 @@ class WiFiModeSwitcher {
         void setupSnifferMode();
         void snifferCallback(void* buf, wifi_promiscuous_pkt_type_t type);
         void printCommands();
+        void printNetworkInfo(int networkIndex); // New helper method
 
         // Static callback wrapper
         static void staticSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t type);
 };
 
 #endif // WIFI_MODE_SWITCHER_H
+
