@@ -34,6 +34,7 @@ private:
     int _sendPin;  // Pin for IR LED
     DecodedIRData irData;
     DecodedIRData * listIrData;
+    char irDataNames[30][15];
     size_t listIrDataSize;
     
     IRReceiveCallback callback;

@@ -9,6 +9,9 @@ MenuSystem::MenuSystem(U8G2 &display, IRTools &irTools, SDTools &sdTools) :
                                         itemCount(0),
                                         menuItems({}),
                                         currentIndex(0),
+                                        currentIndexP1(0),
+                                        currentIndexP2(0),
+                                        currentIndexP3(0),
                                         previousIndex(0),
                                         nextIndex(0),
                                         topIndex(0)
@@ -28,24 +31,39 @@ void MenuSystem::addMenu(char menuItems[MENU_NUM_ITEMS][MENU_ITEM_LENGTH], size_
   }
   this->itemCount = itemCount;
   currentIndex = 0;
+  currentIndexP1 = 0;
+  currentIndexP2 = 0;
+  currentIndexP3 = 0;
   previousIndex = 0;
   nextIndex = 0;
   topIndex = 0;
 }
 
-void MenuSystem::navigateUp()
+void MenuSystem::navigateUp(MenuState currentMenuState)
 {
-  currentIndex--;
-  if (currentIndex < 0) {
-    currentIndex = itemCount - 1;
+  if (currentMenuState == INFRARED_MENU_SEND_LIST) {
+    if (currentIndex > 0) {
+      currentIndex--;
+    }
+  } else {
+    currentIndex--;
+    if (currentIndex < 0) {
+      currentIndex = itemCount - 1;
+    }
   }
 }
 
-void MenuSystem::navigateDown()
+void MenuSystem::navigateDown(MenuState currentMenuState)
 {
-  currentIndex++;
-  if (currentIndex >= itemCount) {
-    currentIndex = 0;
+  if (currentMenuState == INFRARED_MENU_SEND_LIST) {
+    if (currentIndex < itemCount - 1) {
+      currentIndex++;
+    }
+  } else {
+    currentIndex++;
+    if (currentIndex >= itemCount) {
+      currentIndex = 0;
+    }
   }
 }
 
@@ -61,15 +79,22 @@ void MenuSystem::back()
 
 void MenuSystem::render(MenuState currentMenuState)
 {
-  // set correct values for previous and next items
-  previousIndex = currentIndex - 1;
-  if (previousIndex < 0) {
-    previousIndex = itemCount - 1;
+  if(currentMenuState == INFRARED_MENU_SEND_LIST) {
+    currentIndexP1 = (currentIndex / 3) * 3;
+    currentIndexP2 = currentIndexP1 + 1;
+    currentIndexP3 = currentIndexP1 + 2;
+  } 
+  else {
+    // set correct values for previous and next items
+    previousIndex = currentIndex - 1;
+    if (previousIndex < 0) {
+      previousIndex = itemCount - 1;
+    }
+    nextIndex = currentIndex + 1;  
+    if (nextIndex >= itemCount) {
+      nextIndex = 0;
+    } // next item would be after last = make it the first
   }
-  nextIndex = currentIndex + 1;  
-  if (nextIndex >= itemCount) {
-    nextIndex = 0;
-  } // next item would be after last = make it the first
 
   display.firstPage();
   do {
@@ -94,6 +119,8 @@ void MenuSystem::render(MenuState currentMenuState)
         infraredMenuSendListFailedScreen();
         break;
       case INFRARED_MENU_READING_DONE_SAVING:
+        infraredMenuReadingDoneSavingScreen();
+        break;
       case INFRARED_MENU_READING_ERROR:
       case INFRARED_MENU_SEND_SENDING:
       case INFRARED_MENU_LIST:
@@ -194,22 +221,29 @@ void MenuSystem::drawIRMenu()
 void MenuSystem::drawList()
 {
   // selected item background
-  display.drawBitmap(0, 22, 128/8, 21, bitmap_item_sel_outline);
+  int sel = currentIndex % 3;
+  if(sel == 0) {
+    display.drawBitmap(0, 0, 128/8, 21, bitmap_item_sel_outline);
+  } else if (sel == 1) {
+    display.drawBitmap(0, 22, 128/8, 21, bitmap_item_sel_outline);
+  } else if (sel == 2) {
+    display.drawBitmap(0, 44, 128/8, 21, bitmap_item_sel_outline);
+  }
 
   // draw previous item as icon + label
   display.setFont(u8g_font_7x14);
-  display.drawStr(0, 15, menuItems[previousIndex]); 
+  display.drawStr(7, 15, menuItems[currentIndexP1]); 
 
   // draw selected item as icon + label in bold font
   display.setFont(u8g_font_7x14B);
-  display.drawStr(0, 15+20+2, menuItems[currentIndex]);     
+  display.drawStr(7, 15+20+2, menuItems[currentIndexP2]);     
 
   // draw next item as icon + label
   display.setFont(u8g_font_7x14);
-  display.drawStr(0, 15+20+20+2+2, menuItems[nextIndex]);
+  display.drawStr(7, 15+20+20+2+2, menuItems[currentIndexP3]);
 
   // draw scrollbar handle
-  display.drawBox(125, 64/itemCount * currentIndex, 3, 64/itemCount);
+  // display.drawBox(125, 64/itemCount * currentIndex, 3, 64/itemCount);
 }
 
 
@@ -234,7 +268,7 @@ void MenuSystem::infraredMenuReadingDoneScreen(char *command, char *address, con
 }
 void MenuSystem::infraredMenuReadingDoneSavingScreen() {
   display.setFont(u8g_font_7x14);
-  display.drawStr(0, 14, "IR Code Saved");
+  display.drawStr(0, 14, "IR Code Saving");
 }
 void MenuSystem::infraredMenuReadingErrorScreen() {
   display.setFont(u8g_font_7x14);

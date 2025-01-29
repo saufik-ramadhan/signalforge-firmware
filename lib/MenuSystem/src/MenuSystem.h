@@ -17,8 +17,8 @@ public:
   MenuSystem(U8G2 &display, IRTools &irTool, SDTools &sdTools);
 
   void addMenu(char menuItems[MENU_NUM_ITEMS][MENU_ITEM_LENGTH], size_t itemCount);
-  void navigateUp();
-  void navigateDown();
+  void navigateUp(MenuState currentMenuState);
+  void navigateDown(MenuState currentMenuState);
   void select();
   void back();
   void render(MenuState currentMenuState);
@@ -35,6 +35,9 @@ private:
   uint8_t itemCount;
   int pageState;
   int currentIndex;
+  int currentIndexP1;
+  int currentIndexP2;
+  int currentIndexP3;
   int previousIndex;
   int nextIndex;
   uint8_t topIndex;
