@@ -1,17 +1,18 @@
 #include "MenuSystem.h"
 #include "BitmapIcon.h"
+#include "global-configs.h"
 
-MenuSystem::MenuSystem(U8G2 &display, IRTools &irTools, SDTools &sdTools) :
-                                        display(display),
-                                        irTools(irTools),
-                                        sdTools(sdTools),
-                                        currentMenuState(currentMenuState),
-                                        itemCount(0),
-                                        menuItems({}),
-                                        currentIndex(0),
-                                        previousIndex(0),
-                                        nextIndex(0),
-                                        topIndex(0) {
+MenuSystem::MenuSystem(U8G2& display, IRTools& irTools, SDTools& sdTools) :
+    display(display),
+    irTools(irTools),
+    sdTools(sdTools),
+    currentMenuState(currentMenuState),
+    itemCount(0),
+    menuItems({}),
+    currentIndex(0),
+    previousIndex(0),
+    nextIndex(0),
+    topIndex(0) {
     itemsPerPage = display.getDisplayHeight() / 10; // Assuming 10px per item row height
 }
 
@@ -19,11 +20,10 @@ int MenuSystem::getCurrentIndex() const {
     return currentIndex;
 }
 
-void MenuSystem::addMenu(char menuItems[MENU_NUM_ITEMS][MENU_ITEM_LENGTH], size_t itemCount)
-{
-    for (int i = 0; i < MENU_NUM_ITEMS; ++i) {
-        strncpy(this->menuItems[i], menuItems[i], MENU_ITEM_LENGTH - 1); // Copy string safely
-        this->menuItems[i][MENU_ITEM_LENGTH - 1] = '\0'; // Ensure null-termination
+void MenuSystem::addMenu(char menuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH], size_t itemCount) {
+    for (int i = 0; i < MAX_NUM_ITEMS; ++i) {
+        strncpy(this->menuItems[i], menuItems[i], MAX_ITEM_LENGTH - 1); // Copy string safely
+        this->menuItems[i][MAX_ITEM_LENGTH - 1] = '\0'; // Ensure null-termination
     }
     this->itemCount = itemCount;
     currentIndex = 0;
@@ -32,42 +32,42 @@ void MenuSystem::addMenu(char menuItems[MENU_NUM_ITEMS][MENU_ITEM_LENGTH], size_
     topIndex = 0;
 }
 
-void MenuSystem::navigateUp(){
+void MenuSystem::navigateUp() {
     currentIndex--;
-    if (currentIndex < 0){
+    if (currentIndex < 0) {
         currentIndex = itemCount - 1;
     }
 }
 
-void MenuSystem::navigateDown(){
+void MenuSystem::navigateDown() {
     currentIndex++;
-    if (currentIndex >= itemCount){
+    if (currentIndex >= itemCount) {
         currentIndex = 0;
     }
 }
 
-void MenuSystem::select(){
+void MenuSystem::select() {
     // do nothing
 }
 
-void MenuSystem::back(){
+void MenuSystem::back() {
     // do nothing
 }
 
-void MenuSystem::render(MenuState currentMenuState){
+void MenuSystem::render(MenuState currentMenuState) {
     // set correct values for previous and next items
     previousIndex = currentIndex - 1;
-    if (previousIndex < 0){
+    if (previousIndex < 0) {
         previousIndex = itemCount - 1;
     }
     nextIndex = currentIndex + 1;
-    if (nextIndex >= itemCount){
+    if (nextIndex >= itemCount) {
         nextIndex = 0;
     } // next item would be after last = make it the first
 
     display.firstPage();
     do {
-        switch (currentMenuState){
+        switch (currentMenuState) {
             case INFRARED_MENU:
                 drawIRMenu();
                 break;
@@ -89,21 +89,21 @@ void MenuSystem::render(MenuState currentMenuState){
             case INFRARED_MENU_SEND_LIST_FAILED:
                 infraredMenuSendListFailedScreen();
                 break;
-            
+
             case INFRARED_MENU_READING_DONE_SAVING:
             case INFRARED_MENU_READING_ERROR:
             case INFRARED_MENU_SEND_SENDING:
             case INFRARED_MENU_LIST:
-                case INFRARED_MENU_LIST_DELETE:
-                case INFRARED_MENU_LIST_DELETE_SUCCESS:
-            
+            case INFRARED_MENU_LIST_DELETE:
+            case INFRARED_MENU_LIST_DELETE_SUCCESS:
+
             case WIFI_MENU_SCAN:
-                case WIFI_MENU_SCAN_SCANNING:
-                case WIFI_MENU_SCAN_LIST:
+            case WIFI_MENU_SCAN_SCANNING:
+            case WIFI_MENU_SCAN_LIST:
             case WIFI_MENU_DEAUTH:
-                case WIFI_MENU_DEAUTH_SCANNING:
-                case WIFI_MENU_DEAUTH_LIST:
-                case WIFI_MENU_DEAUTH_ATTACKING:
+            case WIFI_MENU_DEAUTH_SCANNING:
+            case WIFI_MENU_DEAUTH_LIST:
+            case WIFI_MENU_DEAUTH_ATTACKING:
             case WIFI_MENU_STATION:
 
             case BLE_MENU_SCAN:
@@ -115,20 +115,20 @@ void MenuSystem::render(MenuState currentMenuState){
             case LORA_MENU_INFO:
 
             case NFC_MENU_READING:
-                case NFC_MENU_READING_DONE:
-                case NFC_MENU_READING_FAILED:
+            case NFC_MENU_READING_DONE:
+            case NFC_MENU_READING_FAILED:
             case NFC_MENU_SEND:
-                case NFC_MENU_SEND_LIST:
-                case NFC_MENU_SEND_SENDING:
-                case NFC_MENU_SEND_DONE:
+            case NFC_MENU_SEND_LIST:
+            case NFC_MENU_SEND_SENDING:
+            case NFC_MENU_SEND_DONE:
             case NFC_MENU_LIST:
-                case NFC_MENU_LIST_DELETE:
-                case NFC_MENU_LIST_DELETE_SUCCESS:
+            case NFC_MENU_LIST_DELETE:
+            case NFC_MENU_LIST_DELETE_SUCCESS:
 
             case MICROSD_MENU_INFO:
             case MICROSD_MENU_FORMAT:
-                case MICROSD_MENU_FORMAT_DONE:
-                case MICROSD_MENU_FORMAT_ERROR:
+            case MICROSD_MENU_FORMAT_DONE:
+            case MICROSD_MENU_FORMAT_ERROR:
                 inDevelopment();
                 break;
 
@@ -142,7 +142,7 @@ void MenuSystem::render(MenuState currentMenuState){
     } while (display.nextPage());
 }
 
-void MenuSystem::drawMenu(){
+void MenuSystem::drawMenu() {
     // selected item background
     display.setFlipMode(0);
 
@@ -169,7 +169,7 @@ void MenuSystem::drawMenu(){
     display.drawBox(125, 64 / itemCount * currentIndex, 3, 64 / itemCount);
 }
 
-void MenuSystem::drawIRMenu(){
+void MenuSystem::drawIRMenu() {
     // selected item background
     display.drawBitmap(0, 22, 128 / 8, 21, bitmap_item_sel_outline);
 
@@ -194,7 +194,7 @@ void MenuSystem::drawIRMenu(){
     display.drawBox(125, 64 / itemCount * currentIndex, 3, 64 / itemCount);
 }
 
-void MenuSystem::drawList(){
+void MenuSystem::drawList() {
     // selected item background
     display.drawBitmap(0, 22, 128 / 8, 21, bitmap_item_sel_outline);
 
@@ -215,17 +215,17 @@ void MenuSystem::drawList(){
 }
 
 // Screen
-void MenuSystem::inDevelopment(){
+void MenuSystem::inDevelopment() {
     display.setFont(u8g_font_7x14);
     display.drawStr(0, 14, "404");
     display.drawStr(0, 28, "In Development");
 }
 
-void MenuSystem::infraredMenuReadingScreen(){
+void MenuSystem::infraredMenuReadingScreen() {
     display.drawXBMP(0, 0, 128, 64, screen[0]);
 }
 
-void MenuSystem::infraredMenuReadingDoneScreen(char *command, char *address, const char *protocol){
+void MenuSystem::infraredMenuReadingDoneScreen(char* command, char* address, const char* protocol) {
     display.setFont(u8g_font_7x14);
     display.drawStr(0, 14, "Read Done");
     display.drawStr(0, 28, "cmd: 0x");
@@ -236,12 +236,12 @@ void MenuSystem::infraredMenuReadingDoneScreen(char *command, char *address, con
     display.drawStr(35, 56, protocol);
 }
 
-void MenuSystem::infraredMenuReadingDoneSavingScreen(){
+void MenuSystem::infraredMenuReadingDoneSavingScreen() {
     display.setFont(u8g_font_7x14);
     display.drawStr(0, 14, "IR Code Saved");
 }
 
-void MenuSystem::infraredMenuReadingErrorScreen(){
+void MenuSystem::infraredMenuReadingErrorScreen() {
     display.setFont(u8g_font_7x14);
     display.drawStr(0, 14, "IR Reading Error");
 }
@@ -252,7 +252,7 @@ void MenuSystem::infraredMenuSendListScreen() {
     drawList();
 }
 
-void MenuSystem::infraredMenuSendListFailedScreen(){
+void MenuSystem::infraredMenuSendListFailedScreen() {
     display.setFont(u8g_font_7x14);
     display.drawStr(0, 14, "Failed to open file");
     display.drawStr(0, 28, "check ircommand.csv");
