@@ -188,7 +188,7 @@ void menuNavigation(ButtonEvent event) {
 
         case NFC_MENU:
             if (event.button == BUTTON_RIGHT) {
-                switch (menuIdx){
+                switch (menuIdx) {
                 case 0:
                     currentMenuState = NFC_MENU_READING;
                     break;
@@ -199,7 +199,7 @@ void menuNavigation(ButtonEvent event) {
                     currentMenuState = NFC_MENU_LIST;
                     break;
                 }
-            } else if (event.button == BUTTON_LEFT){
+            } else if (event.button == BUTTON_LEFT) {
                 menu.addMenu(menuItems, 5);
                 currentMenuState = MAIN_MENU;
             }
@@ -392,7 +392,6 @@ void irTask(void *parameter) {
 //                  Add back button on task
 //     NFC
 //          Read
-//          Write
 //     RF
 //          Send
 //          Receive
