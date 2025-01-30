@@ -11,6 +11,11 @@
 #include <ButtonHandler.h>
 #include <IRTools.h>
 #include <SDTools.h>
+#include <WifiTools.h>
+#include <BTTools.h>
+#include <NFCTools.h>
+#include <LoRaTools.h>
+
 #include "pin-definition.h"
 #include "helper.h"
 #include "global-configs.h"
@@ -68,7 +73,28 @@ SDTools sdTools(5);
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R2, /* reset=*/U8X8_PIN_NONE, /* clock=*/SCL_PIN, /* data=*/SDA_PIN); // ESP32 Thing, HW I2C with pin remapping
 MenuSystem menu(u8g2, irTools, sdTools);
 
+//////////////////////////////////
+// Top Level NFC
+/////////////////////////////////
+#define NFC_INT_PIN 2
+#define NFC_RESET_PIN 3
+NFCReader nfc(NFC_INT_PIN, NFC_RESET_PIN);
 
+//////////////////////////////////
+// Top Level RF
+/////////////////////////////////
+LoRaHandler lora;
+
+//////////////////////////////////
+// Top Level Bluetooth
+/////////////////////////////////
+ESP32_BLE_Multi ble;
+
+
+//////////////////////////////////
+// Top Level Wifi
+/////////////////////////////////
+WiFiModeSwitcher wifi;
 
 
 
@@ -379,6 +405,12 @@ void irTask(void *parameter) {
 
 // TODO:
 // Add each task executor
+// Instantiate each executor
+// Begin each executor
+//              Add event handler
+//              Add menu display each
+//              Remember to add state transition each
+/////////////////////////////////////////////////////
 //     SD files
 //          dir/ls
 //              cat
@@ -406,12 +438,7 @@ void irTask(void *parameter) {
 //          Sniff
 //          Access Point
 
-
-
-// Add menu display each
-// Remember to add state transition each
-
-// Add RF to menu
+// Add RF to menu                                        [done]
 // Run menu first to see how this works
 // Duplicate button right and ok, left and back
 
@@ -497,10 +524,19 @@ void setup() {
     xTaskCreatePinnedToCore(menuTask, "Menu Task", 2048, NULL, 1, NULL, 1);
     //--- 3 Ir Tools Task ()
     xTaskCreatePinnedToCore(irTask, "IR Transceiver Task", 4000, NULL, 1, NULL, 1);
+
+
     //--- 4 Wifi Tools Task ()
-    // xTaskCreatePinnedToCore(wifiTask, "Wifi Tools Task", 1024, NULL, 1, NULL, app_cpu);
+    xTaskCreatePinnedToCore(wifiTask, "Wifi Tools Task", 1024, NULL, 1, NULL, app_cpu);
     //--- 5 NFC Tools Task ()
-    // xTaskCreatePinnedToCore(nfcTask, "NFC Tools Task", 1024, NULL, 1, NULL, app_cpu);
+    xTaskCreatePinnedToCore(nfcTask, "NFC Tools Task", 1024, NULL, 1, NULL, app_cpu);
+    // -- 6 MicroSD Tools Task ()
+    xTaskCreatePinnedToCore(sdCardTask, "MicroSD Tools Task", 1024, NULL, 1, NULL, app_cpu);
+    // -- 7 Bluetooth Tools Task ()
+    xTaskCreatePinnedToCore(bluetoothTask, "Bluetooth Tools Task", 1024, NULL, 1, NULL, app_cpu);
+    // -- 8 LoRa Tools Task ()
+    xTaskCreatePinnedToCore(rfTask, "LoRa Tools Task", 1024, NULL, 1, NULL, app_cpu);
+    
 }
 
 void loop() {
