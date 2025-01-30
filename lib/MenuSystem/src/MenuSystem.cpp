@@ -68,6 +68,8 @@ void MenuSystem::render(MenuState currentMenuState) {
     display.firstPage();
     do {
         switch (currentMenuState) {
+            case MAIN_MENU:
+                drawMenu();
             case INFRARED_MENU:
                 drawIRMenu();
                 break;
@@ -96,45 +98,8 @@ void MenuSystem::render(MenuState currentMenuState) {
             case INFRARED_MENU_LIST:
             case INFRARED_MENU_LIST_DELETE:
             case INFRARED_MENU_LIST_DELETE_SUCCESS:
-
-            case WIFI_MENU_SCAN:
-            case WIFI_MENU_SCAN_SCANNING:
-            case WIFI_MENU_SCAN_LIST:
-            case WIFI_MENU_DEAUTH:
-            case WIFI_MENU_DEAUTH_SCANNING:
-            case WIFI_MENU_DEAUTH_LIST:
-            case WIFI_MENU_DEAUTH_ATTACKING:
-            case WIFI_MENU_STATION:
-
-            case BLE_MENU_SCAN:
-            case BLE_MENU_RECEIVE:
-            case BLE_MENU_SEND:
-
-            case LORA_MENU_SEND:
-            case LORA_MENU_RECEIVE:
-            case LORA_MENU_INFO:
-
-            case NFC_MENU_READING:
-            case NFC_MENU_READING_DONE:
-            case NFC_MENU_READING_FAILED:
-            case NFC_MENU_SEND:
-            case NFC_MENU_SEND_LIST:
-            case NFC_MENU_SEND_SENDING:
-            case NFC_MENU_SEND_DONE:
-            case NFC_MENU_LIST:
-            case NFC_MENU_LIST_DELETE:
-            case NFC_MENU_LIST_DELETE_SUCCESS:
-
-            case MICROSD_MENU_INFO:
-            case MICROSD_MENU_FORMAT:
-            case MICROSD_MENU_FORMAT_DONE:
-            case MICROSD_MENU_FORMAT_ERROR:
-                inDevelopment();
-                break;
-
-            case MAIN_MENU:
             default:
-                drawMenu();
+                inDevelopment();
         }
 
         // display.setFont(u8g2_font_ncenB14_tr);
@@ -264,36 +229,23 @@ void MenuSystem::infraredMenuListScreen() {}
 void MenuSystem::infraredMenuListDeleteScreen() {}
 void MenuSystem::infraredMenuListDeleteSuccessScreen() {}
 
-void MenuSystem::wifiMenuScanScreen() {}
-void MenuSystem::wifiMenuScanScanningScreen() {}
-void MenuSystem::wifiMenuScanListScreen() {}
-void MenuSystem::wifiMenuDeauthScreen() {}
-void MenuSystem::wifiMenuDeauthScanningScreen() {}
-void MenuSystem::wifiMenuDeauthListScreen() {}
-void MenuSystem::wifiMenuDeauthAttackingScreen() {}
-void MenuSystem::wifiMenuStationScreen() {}
 
-void MenuSystem::bleMenuScanScreen() {}
-void MenuSystem::bleMenuReceiveScreen() {}
-void MenuSystem::bleMenuSendScreen() {}
+void MenuSystem::WIFI_MENU() {
 
-void MenuSystem::loraMenuSendScreen() {}
-void MenuSystem::loraMenuReceiveScreen() {}
-void MenuSystem::loraMenuInfoScreen() {}
+}
 
-void MenuSystem::nfcMenuReadingScreen() {}
-void MenuSystem::nfcMenuReadingDoneScreen() {}
-void MenuSystem::nfcMenuReadingFailedScreen() {}
-void MenuSystem::nfcMenuSendScreen() {}
-void MenuSystem::nfcMenuSendListScreen() {}
-void MenuSystem::nfcMenuSendSendingScreen() {}
-void MenuSystem::nfcMenuSendDoneScreen() {}
-void MenuSystem::nfcMenuListScreen() {}
-void MenuSystem::nfcMenuListDeleteScreen() {}
-void MenuSystem::nfcMenuListDeleteSuccessScreen() {}
+void MenuSystem::BLE_MENU() {
 
-void MenuSystem::microsdMenuScreen() {}
-void MenuSystem::microsdMenuInfoScreen() {}
-void MenuSystem::microsdMenuFormatScreen() {}
-void MenuSystem::microsdMenuFormatDoneScreen() {}
-void MenuSystem::microsdMenuFormatErrorScreen() {}
+}
+
+void MenuSystem::SD_MENU() {
+
+}
+
+void MenuSystem::NFC_MENU() {
+
+}
+
+void MenuSystem::RF_MENU() {
+
+}

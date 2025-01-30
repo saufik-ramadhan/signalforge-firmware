@@ -161,25 +161,6 @@ void menuNavigation(ButtonEvent event) {
             }
             break;
 
-        case NFC_MENU:
-            if (event.button == BUTTON_RIGHT) {
-                switch (menuIdx){
-                case 0:
-                    currentMenuState = NFC_MENU_READING;
-                    break;
-                case 1:
-                    currentMenuState = NFC_MENU_SEND_LIST;
-                    break;
-                case 2:
-                    currentMenuState = NFC_MENU_LIST;
-                    break;
-                }
-            } else if (event.button == BUTTON_LEFT){
-                menu.addMenu(menuItems, 5);
-                currentMenuState = MAIN_MENU;
-            }
-            break;
-
         case INFRARED_MENU_READING_DONE:
             if (event.button == BUTTON_RIGHT){
                 currentMenuState = INFRARED_MENU_READING_DONE_SAVING;
@@ -199,19 +180,32 @@ void menuNavigation(ButtonEvent event) {
             }
             break;
 
-        case NFC_MENU_READING:
-        case NFC_MENU_READING_DONE:
-        case NFC_MENU_READING_FAILED:
-        case NFC_MENU_SEND:
-        case NFC_MENU_SEND_LIST:
-        case NFC_MENU_SEND_SENDING:
-        case NFC_MENU_SEND_DONE:
-        case NFC_MENU_LIST:
-        case NFC_MENU_LIST_DELETE:
-        case NFC_MENU_LIST_DELETE_SUCCESS:
-            if (event.button == BUTTON_LEFT) {
-                currentMenuState = NFC_MENU;
+
+
+        case NFC_MENU:
+            if (event.button == BUTTON_RIGHT) {
+                switch (menuIdx){
+                case 0:
+                    currentMenuState = NFC_MENU_READING;
+                    break;
+                case 1:
+                    currentMenuState = NFC_MENU_SEND_LIST;
+                    break;
+                case 2:
+                    currentMenuState = NFC_MENU_LIST;
+                    break;
+                }
+            } else if (event.button == BUTTON_LEFT){
+                menu.addMenu(menuItems, 5);
+                currentMenuState = MAIN_MENU;
             }
+            break;
+
+
+
+
+        default:
+            currentMenuState = MAIN_MENU;
             break;
     }
 }
@@ -382,15 +376,16 @@ void irTask(void *parameter) {
 // TODO:
 // Add each task executor
 //     SD files
-//          cat
-//          info
 //          dir/ls
-//          del format
-//          SD Loader
-//              Duplicate some of the task 
-//                  functionality on arduino
-//              Load confirm
-//              Add back button on task
+//              cat
+//              info
+//              del file
+//              del folder
+//              SD Loader
+//                  Duplicate some of the task 
+//                      functionality on arduino
+//                  Load confirm
+//                  Add back button on task
 //     NFC
 //          Read
 //          Write
@@ -404,10 +399,12 @@ void irTask(void *parameter) {
 //          Announce
 //     Wifi
 //          Scan + Power
-//          Auth
-//          Deauth
+//          Connect Default
 //          Sniff
-//
+//          Access Point
+
+
+
 // Add menu display each
 // Remember to add state transition each
 

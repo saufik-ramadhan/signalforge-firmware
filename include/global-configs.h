@@ -34,13 +34,13 @@ char menuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
 char wifiMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
     {"WIFI Scan"},
     {"WIFI Connect"},
-    {"WIFI Deauth"},
     {"WIFI Access Point"},
     {"WIFI Station"}
 };
 
 char bleMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
     {"BLE Scanner"},
+    {"BLE Sender"},
     {"BLE Receiver"}
 };
 
@@ -54,12 +54,14 @@ char nfcMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
 };
 
 char microsdMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+    {"List files"}
+};
+
+char microsdFileAction[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
     {"Print as text"},
     {"Info"},
-    {"List files"},
     {"Delete files"},
     {"Load Program"}
 };
-
 
 #endif

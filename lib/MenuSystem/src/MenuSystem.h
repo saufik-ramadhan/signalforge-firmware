@@ -60,39 +60,11 @@ class MenuSystem {
         void infraredMenuListDeleteScreen();
         void infraredMenuListDeleteSuccessScreen();
 
-        void wifiMenuScanScreen();
-        void wifiMenuScanScanningScreen();
-        void wifiMenuScanListScreen();
-        void wifiMenuDeauthScreen();
-        void wifiMenuDeauthScanningScreen();
-        void wifiMenuDeauthListScreen();
-        void wifiMenuDeauthAttackingScreen();
-        void wifiMenuStationScreen();
-
-        void bleMenuScanScreen();
-        void bleMenuReceiveScreen();
-        void bleMenuSendScreen();
-
-        void loraMenuSendScreen();
-        void loraMenuReceiveScreen();
-        void loraMenuInfoScreen();
-
-        void nfcMenuReadingScreen();
-        void nfcMenuReadingDoneScreen();
-        void nfcMenuReadingFailedScreen();
-        void nfcMenuSendScreen();
-        void nfcMenuSendListScreen();
-        void nfcMenuSendSendingScreen();
-        void nfcMenuSendDoneScreen();
-        void nfcMenuListScreen();
-        void nfcMenuListDeleteScreen();
-        void nfcMenuListDeleteSuccessScreen();
-
-        void microsdMenuScreen();
-        void microsdMenuInfoScreen();
-        void microsdMenuFormatScreen();
-        void microsdMenuFormatDoneScreen();
-        void microsdMenuFormatErrorScreen();
+        void WIFI_MENU();
+        void BLE_MENU();
+        void SD_MENU();
+        void NFC_MENU();
+        void RF_MENU();
 };
 
 #endif
