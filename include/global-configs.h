@@ -7,16 +7,12 @@
 #ifndef GLOBAL_CONFIGS_H
 #define GLOBAL_CONFIGS_H
 
+#include <vector>
+
 #define MAX_NUM_ITEMS 10
 #define MAX_ITEM_LENGTH 40
 
-char irMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
-    {"IR Send"},
-    {"IR Read"},
-    {"IR List"}  
-};
-
-char menuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+std::vector<char*> menuItems = {
     {"Infrared"},
     {"NFC"},
     {"Wifi"},
@@ -25,39 +21,42 @@ char menuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
     {"LoRa"}
 };
 
+char irMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+    {"IR Send"},
+    {"IR Read"},
+    {"IR List"}  
+};
 
 
 
 
-
-
-char wifiMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+std::vector<char*> wifiMenuItems = {
     {"WIFI Scan"},
     {"WIFI Connect"},
     {"WIFI Access Point"},
     {"WIFI Station"}
 };
 
-char bleMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+std::vector<char*> bleMenuItems = {
     {"BLE Scanner"},
     {"BLE Sender"},
     {"BLE Receiver"}
 };
 
-char loraMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+std::vector<char*> loraMenuItems = {
     {"LoRa Send"},
     {"LoRa Receive"}
 };
 
-char nfcMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+std::vector<char*> nfcMenuItems = {
     {"NFC Read"}
 };
 
-char microsdMenuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+std::vector<char*> microsdMenuItems = {
     {"List files"}
 };
 
-char microsdFileAction[MAX_NUM_ITEMS][MAX_ITEM_LENGTH] = {
+std::vector<char*> microsdFileAction = {
     {"Print as text"},
     {"Info"},
     {"Delete files"},

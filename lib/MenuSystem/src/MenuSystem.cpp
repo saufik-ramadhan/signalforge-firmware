@@ -32,6 +32,18 @@ void MenuSystem::addMenu(char menuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH], size_t 
     topIndex = 0;
 }
 
+void MenuSystem::addMenu(std::vector<char*> menuItems, size_t itemCount) {
+    for (int i = 0; i < MAX_NUM_ITEMS; ++i) {
+        strncpy(this->menuItems[i], menuItems[i], MAX_ITEM_LENGTH - 1); // Copy string safely
+        this->menuItems[i][MAX_ITEM_LENGTH - 1] = '\0'; // Ensure null-termination
+    }
+    this->itemCount = itemCount;
+    currentIndex = 0;
+    previousIndex = 0;
+    nextIndex = 0;
+    topIndex = 0;
+}
+
 void MenuSystem::navigateUp() {
     currentIndex--;
     if (currentIndex < 0) {

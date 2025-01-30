@@ -107,24 +107,28 @@ void menuNavigation(ButtonEvent event) {
                         currentMenuState = INFRARED_MENU;
                         break;
                     case 1:
-                        menu.addMenu(nfcMenuItems, 3);
+                        menu.addMenu(nfcMenuItems, nfcMenuItems.size());
                         currentMenuState = NFC_MENU;
                         break;
                     case 2:
-                        menu.addMenu(wifiMenuItems, 3);
+                        menu.addMenu(wifiMenuItems, wifiMenuItems.size());
                         currentMenuState = WIFI_MENU;
                         break;
                     case 3:
-                        menu.addMenu(microsdMenuItems, 2);
+                        menu.addMenu(microsdMenuItems, microsdMenuItems.size());
                         currentMenuState = MICROSD_MENU;
                         break;
                     case 4:
-                        menu.addMenu(bleMenuItems, 3);
+                        menu.addMenu(bleMenuItems, bleMenuItems.size());
+                        currentMenuState = BLE_MENU; // Fixed from INFRARED_MENU
+                        break;
+                    case 5:
+                        menu.addMenu(loraMenuItems, loraMenuItems.size());
                         currentMenuState = BLE_MENU; // Fixed from INFRARED_MENU
                         break;
                 }
             } else if (event.button == BUTTON_LEFT) {
-                menu.addMenu(menuItems, 5);
+                menu.addMenu(menuItems, menuItems.size());
                 currentMenuState = MAIN_MENU;
             }
             break;

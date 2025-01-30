@@ -18,6 +18,7 @@ class MenuSystem {
         MenuSystem(U8G2 &display, IRTools &irTool, SDTools &sdTools);
 
         void addMenu(char menuItems[MAX_NUM_ITEMS][MAX_ITEM_LENGTH], size_t itemCount);
+        void addMenu(std::vector<char*> menuItems, size_t itemCount);
         void navigateUp();
         void navigateDown();
         void select();
