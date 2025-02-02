@@ -76,6 +76,21 @@ bool WiFiModeSwitcher::connectToNetwork(size_t networkIndex) {
     }
 }
 
+// void WiFiModeSwitcher::handleNetworkConnection() {
+//     if (Serial.available() >= 1) {
+//         String input = Serial.readStringUntil('\n');
+//         int networkNum = input.toInt();
+//         
+//         // Adjust index because commands 1-3 are reserved for mode switching
+//         if (networkNum >= 4 && networkNum < 4 + static_cast<int>(savedNetworks.size())) {
+//             if (currentMode != STA_MODE) {
+//                 setMode(STA_MODE);
+//             }
+//             connectToNetwork(networkNum - 4);
+//         }
+//     }
+// }
+
 
 void WiFiModeSwitcher::printNetworkInfo(int networkIndex) {
     // Print SSID and RSSI for each network
@@ -259,21 +274,6 @@ void WiFiModeSwitcher::printCommands() {
 // }
 
 
-
-// void WiFiModeSwitcher::handleNetworkConnection() {
-//     if (Serial.available() >= 1) {
-//         String input = Serial.readStringUntil('\n');
-//         int networkNum = input.toInt();
-//         
-//         // Adjust index because commands 1-3 are reserved for mode switching
-//         if (networkNum >= 4 && networkNum < 4 + static_cast<int>(savedNetworks.size())) {
-//             if (currentMode != STA_MODE) {
-//                 setMode(STA_MODE);
-//             }
-//             connectToNetwork(networkNum - 4);
-//         }
-//     }
-// }
 
 
 // WifiTools::WifiTools() {

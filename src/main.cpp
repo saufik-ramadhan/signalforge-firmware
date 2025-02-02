@@ -567,7 +567,21 @@ void rfTask(void *parameter) {
 
 /** --- Bluetooth Task */
 void bluetoothTask(void *parameter) {
-    
+    while (1) {
+        switch (currentMenuState) {
+            case BLE_MENU_SCAN:
+                ble.startScanning();
+                currentMenuState = BLE_MENU_SCAN_RESULT;
+                break;
+            case BLE_MENU_RECEIVE:
+                ble.startClient();
+                currentMenuState = BLE_MENU_RECEIVE_RESULT;
+                break;
+            case BLE_MENU_SEND:
+                ble.startServer();
+                currentMenuState = BLE_MENU_SEND_RESEND;
+        }
+    }
 }
 /** END --- */
 
@@ -575,10 +589,11 @@ void bluetoothTask(void *parameter) {
 void wifiTask(void *parameter) {
     wifi.begin();
     while (1) {
-        if (wifi.currentMode == WiFiModeSwitcher::STA_MODE && 
-            (millis() - wifi.lastScanTime >= wifi.SCAN_INTERVAL)) {
-            wifi.scanNetworks();
-        }
+        // if (wifi.currentMode == WiFiModeSwitcher::STA_MODE && 
+        //     (millis() - wifi.lastScanTime >= wifi.SCAN_INTERVAL) &&
+        //     currentMenuState == WIFI_MENU_SCAN) {
+        //     wifi.scanNetworks();
+        // }
         switch (currentMenuState) {
             case WIFI_MENU_SCAN:
                 wifi.setMode(WiFiModeSwitcher::STA_MODE);
@@ -587,8 +602,7 @@ void wifiTask(void *parameter) {
                 break;
             case WIFI_MENU_CONNECTING:
                 wifi.setMode(WiFiModeSwitcher::STA_MODE);
-                wifi.connect();
-                if (wifi.isConnected()) {
+                if (wifi.connectToNetwork(1)) {
                     currentMenuState = WIFI_MENU_CONNECTING_DONE;
                 } else {
                     currentMenuState = WIFI_MENU_CONNECTING_FAIL;

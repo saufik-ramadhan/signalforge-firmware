@@ -73,7 +73,7 @@ class WiFiModeSwitcher {
         void printCommands();
         void printNetworkInfo(int networkIndex);
         static void staticSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t type);
-        // void handleNetworkConnection(); // New method
+        void handleNetworkConnection(); // New method
 };
 
 #endif // WIFI_MODE_SWITCHER_H
