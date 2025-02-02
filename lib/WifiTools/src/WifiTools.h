@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <WiFi.h> // Include the WiFi library for ESP32/ESP8266
 #include <esp_wifi.h> // Required for packet manipulation
+#include <vector>
 
 // #include "freertos/FreeRTOS.h"
 // #include "esp_wifi.h"
@@ -30,6 +31,12 @@
 //         bool isConnected();
 // };
 
+struct NetworkCredentials {
+    String ssid;
+    String password;
+    NetworkCredentials(const char* s, const char* p) : ssid(s), password(p) {}
+};
+
 class WiFiModeSwitcher {
     public:
         enum Mode {
@@ -45,14 +52,14 @@ class WiFiModeSwitcher {
         void setMode(Mode newMode);
         void scanNetworks(); // New method for network scanning
 
-    private:
         Mode currentMode;
+        unsigned long lastScanTime;    // Track last scan time
+        static const unsigned long SCAN_INTERVAL = 10000; // Scan every 10 seconds
+    private:
         const char* ap_ssid;
         const char* ap_password;
         static wifi_promiscuous_filter_t filter;
         static WiFiModeSwitcher* instance;
-        unsigned long lastScanTime;    // Track last scan time
-        static const unsigned long SCAN_INTERVAL = 10000; // Scan every 10 seconds
 
         // Private methods
         void cleanup();

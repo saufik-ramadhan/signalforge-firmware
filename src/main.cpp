@@ -173,7 +173,7 @@ void menuNavigation(ButtonEvent event) {
                         break;
                 }
             } else if (event.button == BUTTON_LEFT) {
-                menu.addMenu(menuItems, 5);
+                menu.addMenu(menuItems, menuItems.size());
                 currentMenuState = MAIN_MENU;
             }
             break;
@@ -212,26 +212,116 @@ void menuNavigation(ButtonEvent event) {
 
 
 
-        case NFC_MENU:
+        case WIFI_MENU:
             if (event.button == BUTTON_RIGHT) {
                 switch (menuIdx) {
-                case 0:
-                    currentMenuState = NFC_MENU_READING;
-                    break;
-                case 1:
-                    currentMenuState = NFC_MENU_SEND_LIST;
-                    break;
-                case 2:
-                    currentMenuState = NFC_MENU_LIST;
-                    break;
+                    case 0:
+                        currentMenuState = WIFI_MENU_SCAN;
+                        break;
+                    case 1:
+                        currentMenuState = WIFI_MENU_CONNECTING;
+                        break;
+                    case 2:
+                        currentMenuState = WIFI_MENU_SNIFFER;
+                        break;
+                    case 3:
+                        currentMenuState = WIFI_MENU_AP_MODE;
+                        break;
+                    default:
+                        menu.addMenu(menuItems, menuItems.size());
+                        currentMenuState = MAIN_MENU;
+                        break;
                 }
             } else if (event.button == BUTTON_LEFT) {
-                menu.addMenu(menuItems, 5);
+                menu.addMenu(menuItems, menuItems.size());
                 currentMenuState = MAIN_MENU;
             }
             break;
+        case WIFI_MENU_SCAN_DONE:
+            if (event.button == BUTTON_RIGHT) {
+                currentMenuState = WIFI_MENU_SCAN;
+            } else if (event.button == BUTTON_LEFT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            }
 
 
+
+
+
+        case BLE_MENU:
+            if (event.button == BUTTON_RIGHT) {
+                switch (menuIdx) {
+                    case 0:
+                        currentMenuState = BLE_MENU_SCAN;
+                        break;
+                    case 1:
+                        currentMenuState = BLE_MENU_RECEIVE;
+                        break;
+                    case 2:
+                        currentMenuState = BLE_MENU_SEND;
+                        break;
+                    default:
+                        menu.addMenu(menuItems, menuItems.size());
+                        currentMenuState = MAIN_MENU;
+                        break;
+                }
+            } else if (event.button == BUTTON_LEFT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            }
+            break;
+        case NFC_MENU:
+            if (event.button == BUTTON_RIGHT) {
+                switch (menuIdx) {
+                    case 0:
+                        currentMenuState = NFC_MENU_READING;
+                        break;
+                    default:
+                        menu.addMenu(menuItems, menuItems.size());
+                        currentMenuState = MAIN_MENU;
+                        break;
+                }
+            } else if (event.button == BUTTON_LEFT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            }
+            break;
+        case LORA_MENU:
+            if (event.button == BUTTON_RIGHT) {
+                switch (menuIdx) {
+                    case 0:
+                        currentMenuState = LORA_MENU_SEND;
+                        break;
+                    case 1:
+                        currentMenuState = LORA_MENU_RECEIVE;
+                        break;
+                    default:
+                        menu.addMenu(menuItems, menuItems.size());
+                        currentMenuState = MAIN_MENU;
+                        break;
+                }
+            } else if (event.button == BUTTON_LEFT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            }
+            break;
+        case MICROSD_MENU:
+            if (event.button == BUTTON_RIGHT) {
+                switch (menuIdx) {
+                    case 0:
+                        currentMenuState = MICROSD_MENU_LIST;
+                        break;
+                    default:
+                        menu.addMenu(menuItems, menuItems.size());
+                        currentMenuState = MAIN_MENU;
+                        break;
+                }
+            } else if (event.button == BUTTON_LEFT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            }
+            break;
 
 
         default:
@@ -483,7 +573,39 @@ void bluetoothTask(void *parameter) {
 
 /** --- Wifi Task Task */
 void wifiTask(void *parameter) {
-    
+    wifi.begin();
+    while (1) {
+        if (wifi.currentMode == WiFiModeSwitcher::STA_MODE && 
+            (millis() - wifi.lastScanTime >= wifi.SCAN_INTERVAL)) {
+            wifi.scanNetworks();
+        }
+        switch (currentMenuState) {
+            case WIFI_MENU_SCAN:
+                wifi.setMode(WiFiModeSwitcher::STA_MODE);
+                wifi.scanNetworks();
+                currentMenuState = WIFI_MENU_SCAN_DONE;
+                break;
+            case WIFI_MENU_CONNECTING:
+                wifi.setMode(WiFiModeSwitcher::STA_MODE);
+                wifi.connect();
+                if (wifi.isConnected()) {
+                    currentMenuState = WIFI_MENU_CONNECTING_DONE;
+                } else {
+                    currentMenuState = WIFI_MENU_CONNECTING_FAIL;
+                }
+                break;
+            case WIFI_MENU_SNIFFER:
+                wifi.setMode(WiFiModeSwitcher::SNIFFER_MODE);
+                break;
+            case WIFI_MENU_AP_MODE:
+                wifi.setMode(WiFiModeSwitcher::AP_MODE);
+                currentMenuState = WIFI_MENU_AP_MODE_DONE;
+                break;
+            default:
+                break;
+        }
+        msDelay(1000);
+    }
 }
 /** END --- */
 

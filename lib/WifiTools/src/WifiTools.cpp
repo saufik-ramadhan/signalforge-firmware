@@ -187,6 +187,21 @@ void WiFiModeSwitcher::printCommands() {
 }
 
 
+////////////////////////
+// Example
+////////////////////////
+// #include "WiFiModeSwitcher.h"
+// 
+// WiFiModeSwitcher wifiSwitcher;
+// 
+// void setup() {
+//     wifiSwitcher.begin();
+// }
+// 
+// void loop() {
+//     wifiSwitcher.handleSerial();
+// }
+
 // WifiTools::WifiTools() {
 //     // Constructor (can initialize variables here if needed)
 //     WiFi.mode(WIFI_STA);
