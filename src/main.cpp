@@ -535,6 +535,9 @@ void irTask(void *parameter) {
 
 //////////////////////////
 // TODO: Hardware
+// Recheck pin for sd
+// Recheck pin for nfc + i2c
+//
 // Remove oled
 // Add battery
 // Add charger
@@ -549,19 +552,69 @@ void irTask(void *parameter) {
 
 /** --- SD Card Handler and Subroutines --- */
 void sdCardTask(void *parameter) {
-    
+    // SD.begin();
+    String currentpath = "/";
+    std::vector<String> files;
+    while (1) {
+        switch (currentMenuState) {
+            case MICROSD_MENU_LIST:
+                files = sdTools.listDir(currentpath.c_str());
+                break;
+            case MICROSD_MENU_FILE_MENU_CAT:
+                int numLines = 5;
+                files = sdTools.head(currentpath.c_str(), numLines);
+                break;
+            case MICROSD_MENU_FILE_MENU_DELETE_FILE:
+                sdTools.deleteFile(SD, currentpath.c_str());
+                break;
+            case MICROSD_MENU_FILE_MENU_DELETE_FOLDER:
+                sdTools.deleteDir(SD, currentpath.c_str());
+                break;
+            case MICROSD_MENU_FILE_MENU_INFO_FILE:
+                // char *info = sdTools.getCardInfo();
+                break;
+            case MICROSD_MENU_FILE_MENU_LOAD_PROGRAM:
+                break;
+            default:
+                break;
+        }
+        msDelay(200);
+    }
 }
 /** END --- */
 
 /** --- NFC Task */
 void nfcTask(void *parameter) {
-
+    nfc.begin();
+    while (1) {
+        switch (currentMenuState) {
+            case NFC_MENU_READING:
+                nfc.update();
+                currentMenuState = NFC_MENU_READING;
+                break;
+            default:
+                break;
+        }
+        msDelay(200);
+    }
 }
 /** END --- */
 
 /** --- RF Task */
 void rfTask(void *parameter) {
-    
+    lora.begin();
+    while (1) {
+        switch (currentMenuState) {
+            case LORA_MENU_SEND:
+                lora.sendPacket();
+                currentMenuState = LORA_MENU_SEND;
+                break;
+            case LORA_MENU_RECEIVE:
+                lora.processIncomingPackets();
+                break;
+        }
+        msDelay(200);
+    }
 }
 /** END --- */
 
@@ -581,6 +634,7 @@ void bluetoothTask(void *parameter) {
                 ble.startServer();
                 currentMenuState = BLE_MENU_SEND_RESEND;
         }
+        msDelay(200);
     }
 }
 /** END --- */

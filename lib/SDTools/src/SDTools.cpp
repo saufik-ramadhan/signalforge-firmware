@@ -46,35 +46,64 @@ bool SDTools::readLine(File& file, char* buffer, size_t maxLen) {
 }
 
 
-void SDTools::listDir(fs::FS& fs, const char* dirname, uint8_t levels) {
-    Serial.printf("Listing directory: %s\n", dirname);
+// Assuming SDTools is a class and readLine is defined as given.
+std::vector<String> SDTools::head(const char* dirname, int numLines) {
+    fs::FS& fs = SD;
+    const size_t maxLineLen = 20;  // Maximum length for each line
+    char buffer[maxLineLen];
+    std::vector<String> lines; // Vector to store the result
 
+    File file = fs.open(dirname);
+    if (!file) {
+        return lines;
+    }
+
+    // Attempt to read up to 5 lines
+    for (int i = 0; i < numLines; i++) {
+        if (readLine(file, buffer, maxLineLen)) {
+            // Successfully read a line; store it in the vector
+            lines.push_back(String(buffer));
+        } else {
+            // No more data (end-of-file reached or an empty line read)
+            break;
+        }
+    }
+    
+    return lines;
+}
+
+std::vector<String> SDTools::listDir(const char* dirname) {
+    fs::FS& fs = SD;
+    uint8_t levels = 0;
+    Serial.printf("Listing directory: %s\n", dirname);
+    std::vector<String> fileList;
+    
     File root = fs.open(dirname);
     if (!root) {
         Serial.println("Failed to open directory");
-        return;
+        return fileList;
     }
     if (!root.isDirectory()) {
         Serial.println("Not a directory");
-        return;
+        return fileList;
     }
-
+    
+    // Iterate over each entry in the directory (non-recursive).
     File file = root.openNextFile();
     while (file) {
+        // Optionally, append a trailing slash for directories.
         if (file.isDirectory()) {
+            fileList.push_back(String(file.name()) + "/");
             Serial.print("  DIR : ");
-            Serial.println(file.name());
-            if (levels) {
-                listDir(fs, file.path(), levels - 1);
-            }
         } else {
+            fileList.push_back(String(file.name()));
             Serial.print("  FILE: ");
-            Serial.print(file.name());
-            Serial.print("  SIZE: ");
-            Serial.println(file.size());
         }
+        Serial.println(file.name());
         file = root.openNextFile();
     }
+    
+    return fileList;
 }
 
 void SDTools::deleteFile(fs::FS& fs, const char* path) {
