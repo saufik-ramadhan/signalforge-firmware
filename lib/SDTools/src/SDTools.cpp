@@ -124,8 +124,8 @@ void SDTools::deleteDir(fs::FS& fs, const char* path) {
     }
 }
 
-void SDTools::updateFromFS(fs::FS& fs) {
-    File updateBin = fs.open("/signalforge/main.bin");
+void SDTools::updateFromFS(fs::FS& fs, const char* path) {
+    File updateBin = fs.open(path);
     if (updateBin) {
         if (updateBin.isDirectory()) {
             Serial.println("Error, update.bin is not a file");

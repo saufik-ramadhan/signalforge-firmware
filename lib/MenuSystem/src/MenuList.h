@@ -51,6 +51,5 @@ enum MenuState {
                     MICROSD_MENU_FILE_MENU_DELETE_FOLDER,
                         MICROSD_MENU_FILE_MENU_DELETE_FOLDER_DONE,
                     MICROSD_MENU_FILE_MENU_INFO_FILE,
-                        MICROSD_MENU_FILE_MENU_INFO_FILE_RESULT,
                     MICROSD_MENU_FILE_MENU_LOAD_PROGRAM
 };

@@ -570,10 +570,8 @@ void sdCardTask(void *parameter) {
             case MICROSD_MENU_FILE_MENU_DELETE_FOLDER:
                 sdTools.deleteDir(SD, currentpath.c_str());
                 break;
-            case MICROSD_MENU_FILE_MENU_INFO_FILE:
-                // char *info = sdTools.getCardInfo();
-                break;
             case MICROSD_MENU_FILE_MENU_LOAD_PROGRAM:
+                sdTools.updateFromFS(SD, currentpath.c_str());
                 break;
             default:
                 break;

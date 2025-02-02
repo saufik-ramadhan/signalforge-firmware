@@ -22,7 +22,7 @@ class SDTools {
         std::vector<String> listDir(const char* dirname);                   // Dir/ls
         void deleteFile(fs::FS& fs, const char* path);                        // Rm
         void deleteDir(fs::FS& fs, const char* path);                        // Rmdir
-        void updateFromFS(fs::FS& fs);                                        // Load function
+        void updateFromFS(fs::FS& fs, const char* path);                                        // Load function
 
     private:
         int _chipSelectPin;
