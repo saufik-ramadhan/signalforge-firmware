@@ -50,28 +50,30 @@ class WiFiModeSwitcher {
         void handleSerial();
         Mode getCurrentMode() const;
         void setMode(Mode newMode);
-        void scanNetworks(); // New method for network scanning
+        void scanNetworks();
+        void addNetwork(const char* ssid, const char* password);
+        bool connectToNetwork(size_t networkIndex);
+        void printSavedNetworks();
 
         Mode currentMode;
-        unsigned long lastScanTime;    // Track last scan time
-        static const unsigned long SCAN_INTERVAL = 10000; // Scan every 10 seconds
+        unsigned long lastScanTime;
+        static const unsigned long SCAN_INTERVAL = 10000;
     private:
         const char* ap_ssid;
         const char* ap_password;
         static wifi_promiscuous_filter_t filter;
         static WiFiModeSwitcher* instance;
+        std::vector<NetworkCredentials> savedNetworks; // Store predefined networks
 
-        // Private methods
         void cleanup();
         void setupSTAMode();
         void setupAPMode();
         void setupSnifferMode();
         void snifferCallback(void* buf, wifi_promiscuous_pkt_type_t type);
         void printCommands();
-        void printNetworkInfo(int networkIndex); // New helper method
-
-        // Static callback wrapper
+        void printNetworkInfo(int networkIndex);
         static void staticSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t type);
+        // void handleNetworkConnection(); // New method
 };
 
 #endif // WIFI_MODE_SWITCHER_H

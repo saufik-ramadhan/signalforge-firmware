@@ -11,6 +11,20 @@ WiFiModeSwitcher::WiFiModeSwitcher(const char* ap_ssid, const char* ap_password)
     instance = this;
 }
 
+void WiFiModeSwitcher::addNetwork(const char* ssid, const char* password) {
+    savedNetworks.emplace_back(ssid, password);
+}
+
+void WiFiModeSwitcher::printSavedNetworks() {
+    Serial.println("\nSaved Networks:");
+    Serial.println("---------------");
+    for (size_t i = 0; i < savedNetworks.size(); i++) {
+        Serial.printf("%d) %s\n", i + 4, savedNetworks[i].ssid.c_str());
+    }
+    Serial.println("---------------");
+}
+
+
 void WiFiModeSwitcher::begin() {
     Serial.begin(115200);
     // printCommands();
@@ -32,6 +46,36 @@ void WiFiModeSwitcher::scanNetworks() {
     }
     Serial.println("");
 }
+
+bool WiFiModeSwitcher::connectToNetwork(size_t networkIndex) {
+    if (networkIndex >= savedNetworks.size()) {
+        Serial.println("Invalid network index!");
+        return false;
+    }
+
+    Serial.printf("Connecting to %s...\n", savedNetworks[networkIndex].ssid.c_str());
+    
+    WiFi.begin(savedNetworks[networkIndex].ssid.c_str(), 
+               savedNetworks[networkIndex].password.c_str());
+    
+    int attempts = 0;
+    while (WiFi.status() != WL_CONNECTED && attempts < 20) {
+        delay(500);
+        Serial.print(".");
+        attempts++;
+    }
+    Serial.println();
+    
+    if (WiFi.status() == WL_CONNECTED) {
+        Serial.printf("Connected to %s\n", savedNetworks[networkIndex].ssid.c_str());
+        Serial.printf("IP address: %s\n", WiFi.localIP().toString().c_str());
+        return true;
+    } else {
+        Serial.printf("Failed to connect to %s\n", savedNetworks[networkIndex].ssid.c_str());
+        return false;
+    }
+}
+
 
 void WiFiModeSwitcher::printNetworkInfo(int networkIndex) {
     // Print SSID and RSSI for each network
@@ -139,16 +183,7 @@ void WiFiModeSwitcher::snifferCallback(void* buf, wifi_promiscuous_pkt_type_t ty
     Serial.println();
 }
 
-
-
-
-
-
-
-
-
 void WiFiModeSwitcher::handleSerial() {
-    // Check for periodic scan in STA mode
     if (currentMode == STA_MODE && 
         (millis() - lastScanTime >= SCAN_INTERVAL)) {
         scanNetworks();
@@ -166,16 +201,30 @@ void WiFiModeSwitcher::handleSerial() {
             case '3':
                 setMode(SNIFFER_MODE);
                 break;
-            case '4':
+            case 's':
                 if (currentMode == STA_MODE) {
                     scanNetworks();
                 } else {
                     Serial.println("Scanning only available in STA mode");
                 }
                 break;
+            case 'n':
+                printSavedNetworks();
+                break;
+            default:
+                if (isDigit(command)) {
+                    // Put back the digit we just read
+                    int networkNum = String(command).toInt();
+                    if (networkNum >= 4 && networkNum < 4 + static_cast<int>(savedNetworks.size())) {
+                        setMode(STA_MODE);
+                        connectToNetwork(networkNum - 4);
+                    }
+                }
+                break;
         }
     }
 }
+
 
 void WiFiModeSwitcher::printCommands() {
     Serial.println("ESP32 WiFi Mode Switcher");
@@ -183,24 +232,49 @@ void WiFiModeSwitcher::printCommands() {
     Serial.println("'1' - Switch to STA mode");
     Serial.println("'2' - Switch to AP mode");
     Serial.println("'3' - Switch to Sniffer mode");
-    Serial.println("'4' - Scan networks (in STA mode)");
+    Serial.println("'s' - Scan networks (in STA mode)");
+    Serial.println("'n' - Show saved networks");
+    Serial.println("'4-9' - Connect to saved network");
 }
 
 
 ////////////////////////
 // Example
-////////////////////////
+/////////////////////////
 // #include "WiFiModeSwitcher.h"
 // 
 // WiFiModeSwitcher wifiSwitcher;
 // 
 // void setup() {
+//     // Add your predefined networks here
+//     wifiSwitcher.addNetwork("MyHomeWiFi", "password123");
+//     wifiSwitcher.addNetwork("OfficeWiFi", "office123");
+//     wifiSwitcher.addNetwork("GuestNetwork", "guest123");
+//     
 //     wifiSwitcher.begin();
 // }
 // 
 // void loop() {
 //     wifiSwitcher.handleSerial();
 // }
+
+
+
+// void WiFiModeSwitcher::handleNetworkConnection() {
+//     if (Serial.available() >= 1) {
+//         String input = Serial.readStringUntil('\n');
+//         int networkNum = input.toInt();
+//         
+//         // Adjust index because commands 1-3 are reserved for mode switching
+//         if (networkNum >= 4 && networkNum < 4 + static_cast<int>(savedNetworks.size())) {
+//             if (currentMode != STA_MODE) {
+//                 setMode(STA_MODE);
+//             }
+//             connectToNetwork(networkNum - 4);
+//         }
+//     }
+// }
+
 
 // WifiTools::WifiTools() {
 //     // Constructor (can initialize variables here if needed)
