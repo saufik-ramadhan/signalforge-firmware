@@ -110,6 +110,82 @@ void MenuSystem::render(MenuState currentMenuState) {
             case INFRARED_MENU_LIST:
             case INFRARED_MENU_LIST_DELETE:
             case INFRARED_MENU_LIST_DELETE_SUCCESS:
+                inDevelopment();
+                break;
+            
+
+
+            case MenuState::WIFI_MENU:
+                break;
+                case WIFI_MENU_SCAN:
+                    break;
+                    case WIFI_MENU_SCAN_DONE:
+                        break;
+                case WIFI_MENU_CONNECTING:
+                    break;
+                    case WIFI_MENU_CONNECTING_DONE:
+                        break;
+                    case WIFI_MENU_CONNECTING_FAIL:
+                        break;
+                case WIFI_MENU_SNIFFER:
+                    break;
+                case WIFI_MENU_AP_MODE:
+                    break;
+                    case WIFI_MENU_AP_MODE_DONE:
+                        break;
+
+            case MenuState::BLE_MENU:
+                break;
+                case BLE_MENU_SCAN:
+                    break;
+                    case BLE_MENU_SCAN_RESULT:
+                        break;
+                case BLE_MENU_RECEIVE:
+                    break;
+                    case BLE_MENU_RECEIVE_RESULT:
+                        break;
+                case BLE_MENU_SEND:
+                    break;
+                    case BLE_MENU_SEND_RESEND:
+                        break;
+            case LORA_MENU:
+                break;
+                case LORA_MENU_SEND:
+                    break;
+                case LORA_MENU_RECEIVE:
+                    break;
+
+
+            case MenuState::NFC_MENU:
+                break;
+                case NFC_MENU_READING:
+                    break;
+
+
+            case MICROSD_MENU:
+                break;
+                case MICROSD_MENU_LIST:
+                    break;
+                    case MICROSD_MENU_LIST_DONE:
+                        break;
+                        case MICROSD_MENU_FILE_MENU:
+                            break;
+                            case MICROSD_MENU_FILE_MENU_CAT:
+                                break;
+                                case MICROSD_MENU_FILE_MENU_CAT_RESULT:
+                                    break;
+                            case MICROSD_MENU_FILE_MENU_DELETE_FILE:
+                                break;
+                                case MICROSD_MENU_FILE_MENU_DELETE_FILE_DONE:
+                                    break;
+                            case MICROSD_MENU_FILE_MENU_DELETE_FOLDER:
+                                break;
+                                case MICROSD_MENU_FILE_MENU_DELETE_FOLDER_DONE:
+                                    break;
+                            case MICROSD_MENU_FILE_MENU_INFO_FILE:
+                                break;
+                            case MICROSD_MENU_FILE_MENU_LOAD_PROGRAM:
+                                break;
             default:
                 inDevelopment();
         }
