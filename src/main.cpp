@@ -563,15 +563,21 @@ void sdCardTask(void *parameter) {
             case MICROSD_MENU_FILE_MENU_CAT:
                 int numLines = 5;
                 files = sdTools.head(currentpath.c_str(), numLines);
+                currentMenuState = MICROSD_MENU_FILE_MENU_CAT_RESULT;
                 break;
             case MICROSD_MENU_FILE_MENU_DELETE_FILE:
                 sdTools.deleteFile(SD, currentpath.c_str());
+                currentMenuState = MICROSD_MENU_FILE_MENU_DELETE_FILE_DONE;
                 break;
             case MICROSD_MENU_FILE_MENU_DELETE_FOLDER:
                 sdTools.deleteDir(SD, currentpath.c_str());
+                currentMenuState = MICROSD_MENU_FILE_MENU_DELETE_FOLDER_DONE;
                 break;
             case MICROSD_MENU_FILE_MENU_LOAD_PROGRAM:
                 sdTools.updateFromFS(SD, currentpath.c_str());
+                break;
+            case MICROSD_MENU_FILE_MENU_INFO_FILE:
+                currentMenuState = MICROSD_MENU_FILE_MENU_INFO_FILE_DONE;
                 break;
             default:
                 break;
@@ -713,7 +719,6 @@ void setup() {
     //--- 3 Ir Tools Task ()
     xTaskCreatePinnedToCore(irTask, "IR Transceiver Task", 4000, NULL, 1, NULL, 1);
 
-
     //--- 4 Wifi Tools Task ()
     xTaskCreatePinnedToCore(wifiTask, "Wifi Tools Task", 1024, NULL, 1, NULL, app_cpu);
     //--- 5 NFC Tools Task ()
@@ -724,7 +729,6 @@ void setup() {
     xTaskCreatePinnedToCore(bluetoothTask, "Bluetooth Tools Task", 1024, NULL, 1, NULL, app_cpu);
     // -- 8 LoRa Tools Task ()
     xTaskCreatePinnedToCore(rfTask, "LoRa Tools Task", 1024, NULL, 1, NULL, app_cpu);
-    
 }
 
 void loop() {
