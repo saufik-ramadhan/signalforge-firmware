@@ -397,8 +397,8 @@ void menuNavigation(ButtonEvent event) {
             }
             break;
 
-        case LORA_SEND:
-        case LORA_RECEIVE:
+        case LORA_MENU_SEND:
+        case LORA_MENU_RECEIVE:
             if (event.button == BUTTON_LEFT) {
                 menu.addMenu(loraMenuItems, loraMenuItems.size());
                 currentMenuState = BLE_MENU; // Fixed from INFRARED_MENU
@@ -440,23 +440,23 @@ void menuNavigation(ButtonEvent event) {
             }
             break;
 
-        case MICROSD_FILE_MENU:
+        case MICROSD_MENU_FILE_MENU:
             if (event.button == BUTTON_RIGHT) {
                 switch (menuIdx) {
                     case 0:
-                        currentMenuState = MICROSD_MENU_CAT;
+                        currentMenuState = MICROSD_MENU_FILE_MENU_CAT;
                         break;
                     case 1:
-                        currentMenuState = MICROSD_MENU_DELETE_FILE;
+                        currentMenuState = MICROSD_MENU_FILE_MENU_DELETE_FILE;
                         break;
                     case 2:
-                        currentMenuState = MICROSD_MENU_DELETE_FOLDER;
+                        currentMenuState = MICROSD_MENU_FILE_MENU_DELETE_FOLDER;
                         break;
                     case 3:
-                        currentMenuState = MICROSD_MENU_INFO_FILE;
+                        currentMenuState = MICROSD_MENU_FILE_MENU_INFO_FILE;
                         break;
                     case 4:
-                        currentMenuState = MICROSD_MENU_LOAD_PROGRAM;
+                        currentMenuState = MICROSD_MENU_FILE_MENU_LOAD_PROGRAM;
                         break;
                     default:
                         menu.addMenu(menuItems, menuItems.size());
