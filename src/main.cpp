@@ -237,15 +237,44 @@ void menuNavigation(ButtonEvent event) {
                 currentMenuState = MAIN_MENU;
             }
             break;
+
+        case WIFI_MENU_SCAN:
+        case WIFI_MENU_CONNECTING:
+        case WIFI_MENU_SNIFFER:
+        case WIFI_MENU_AP_MODE:
+            if (event.button == BUTTON_LEFT) {
+                menu.addMenu(wifiMenuItems, wifiMenuItems.size());
+                currentMenuState = WIFI_MENU;
+            }
+            break;
+
         case WIFI_MENU_SCAN_DONE:
             if (event.button == BUTTON_RIGHT) {
-                currentMenuState = WIFI_MENU_SCAN;
-            } else if (event.button == BUTTON_LEFT) {
                 menu.addMenu(menuItems, menuItems.size());
                 currentMenuState = MAIN_MENU;
+            } else if (event.button == BUTTON_LEFT) {
+                currentMenuState = WIFI_MENU_SCAN;
             }
+            break;
+        
+        case WIFI_MENU_CONNECTING_DONE:
+        case WIFI_MENU_CONNECTING_FAIL:
+            if (event.button == BUTTON_RIGHT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            } else if (event.button == BUTTON_LEFT) {
+                currentMenuState = WIFI_MENU_CONNECTING;
+            }
+            break;
 
-
+        case WIFI_MENU_AP_MODE_DONE:
+            if (event.button == BUTTON_RIGHT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            } else if (event.button == BUTTON_LEFT) {
+                currentMenuState = WIFI_MENU_AP_MODE;
+            }
+            break;
 
 
 
@@ -271,6 +300,57 @@ void menuNavigation(ButtonEvent event) {
                 currentMenuState = MAIN_MENU;
             }
             break;
+
+        case BLE_MENU_SCAN:
+        case BLE_MENU_RECEIVE:
+            if (event.button == BUTTON_LEFT) {
+                menu.addMenu(wifiMenuItems, wifiMenuItems.size());
+                currentMenuState = WIFI_MENU;
+            }
+            break;
+        
+        case BLE_MENU_SEND:
+            if (event.button == BUTTON_RIGHT) {
+                currentMenuState = BLE_MENU_SEND_RESEND;
+            } else if (event.button == BUTTON_LEFT) {
+                menu.addMenu(bleMenuItems, bleMenuItems.size());
+                currentMenuState = BLE_MENU; // Fixed from INFRARED_MENU
+            }
+            break;
+
+        case BLE_MENU_SCAN_RESULT:
+            if (event.button == BUTTON_RIGHT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            } else if (event.button == BUTTON_LEFT) {
+                currentMenuState = BLE_MENU_SCAN;
+            }
+            break;
+        
+        case BLE_MENU_RECEIVE_RESULT:
+            if (event.button == BUTTON_RIGHT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            } else if (event.button == BUTTON_LEFT) {
+                currentMenuState = BLE_MENU_RECEIVE;
+            }
+            break;
+        
+        case BLE_MENU_SEND_RESEND:
+            if (event.button == BUTTON_RIGHT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            } else if (event.button == BUTTON_LEFT) {
+                currentMenuState = BLE_MENU_SEND;
+            }
+            break;
+
+
+
+
+
+
+        
         case NFC_MENU:
             if (event.button == BUTTON_RIGHT) {
                 switch (menuIdx) {
@@ -287,6 +367,16 @@ void menuNavigation(ButtonEvent event) {
                 currentMenuState = MAIN_MENU;
             }
             break;
+
+        case NFC_MENU_READING:
+            if (event.button == BUTTON_LEFT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            }
+            break;
+
+
+
         case LORA_MENU:
             if (event.button == BUTTON_RIGHT) {
                 switch (menuIdx) {
@@ -306,6 +396,19 @@ void menuNavigation(ButtonEvent event) {
                 currentMenuState = MAIN_MENU;
             }
             break;
+
+        case LORA_SEND:
+        case LORA_RECEIVE:
+            if (event.button == BUTTON_LEFT) {
+                menu.addMenu(loraMenuItems, loraMenuItems.size());
+                currentMenuState = BLE_MENU; // Fixed from INFRARED_MENU
+            }
+            break;
+
+
+
+
+
         case MICROSD_MENU:
             if (event.button == BUTTON_RIGHT) {
                 switch (menuIdx) {
@@ -322,7 +425,64 @@ void menuNavigation(ButtonEvent event) {
                 currentMenuState = MAIN_MENU;
             }
             break;
+        case MICROSD_MENU_LIST:
+            if (event.button == BUTTON_LEFT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            }
+            break;
+        case MICROSD_MENU_LIST_DONE:
+            if (event.button == BUTTON_RIGHT) {
+                currentMenuState = MICROSD_MENU_FILE_MENU;
+            } else if (event.button == BUTTON_LEFT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MAIN_MENU;
+            }
+            break;
 
+        case MICROSD_FILE_MENU:
+            if (event.button == BUTTON_RIGHT) {
+                switch (menuIdx) {
+                    case 0:
+                        currentMenuState = MICROSD_MENU_CAT;
+                        break;
+                    case 1:
+                        currentMenuState = MICROSD_MENU_DELETE_FILE;
+                        break;
+                    case 2:
+                        currentMenuState = MICROSD_MENU_DELETE_FOLDER;
+                        break;
+                    case 3:
+                        currentMenuState = MICROSD_MENU_INFO_FILE;
+                        break;
+                    case 4:
+                        currentMenuState = MICROSD_MENU_LOAD_PROGRAM;
+                        break;
+                    default:
+                        menu.addMenu(menuItems, menuItems.size());
+                        currentMenuState = MAIN_MENU;
+                        break;
+                }
+            } else if (event.button == BUTTON_LEFT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MICROSD_MENU_LIST_DONE;
+            }
+            break;
+
+        case MICROSD_MENU_FILE_MENU_CAT:
+        case MICROSD_MENU_FILE_MENU_CAT_RESULT:
+        case MICROSD_MENU_FILE_MENU_DELETE_FILE:
+        case MICROSD_MENU_FILE_MENU_DELETE_FILE_DONE:
+        case MICROSD_MENU_FILE_MENU_DELETE_FOLDER:
+        case MICROSD_MENU_FILE_MENU_DELETE_FOLDER_DONE:
+        case MICROSD_MENU_FILE_MENU_INFO_FILE:
+        case MICROSD_MENU_FILE_MENU_INFO_FILE_DONE:
+        case MICROSD_MENU_FILE_MENU_LOAD_PROGRAM:
+            if (event.button == BUTTON_LEFT) {
+                menu.addMenu(menuItems, menuItems.size());
+                currentMenuState = MICROSD_MENU_LIST_DONE;
+            }
+            break;
 
         default:
             currentMenuState = MAIN_MENU;
